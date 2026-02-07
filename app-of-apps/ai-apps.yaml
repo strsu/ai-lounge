@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ai-app
-  namespace: argocd
+  namespace: ai-lounge
 spec:
   project: ai-agent-project
   source:
@@ -11,7 +11,7 @@ spec:
     path: app-of-apps
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: ai-lounge
   syncPolicy:
     automated:
       prune: true

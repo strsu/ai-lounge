@@ -2,14 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: ai-agent-project
-  namespace: argocd
+  namespace: ai-lounge
 spec:
   description: "AI Agent가 관리하는 프로젝트 전용 격리 환경"
   # AI가 배포할 수 있는 대상 클러스터와 네임스페이스 제한
   destinations:
     - namespace: ai-lounge  # 실제 서비스 배포 네임스페이스
-      server: https://kubernetes.default.svc
-    - namespace: argocd  # App of Apps Root Application용
       server: https://kubernetes.default.svc
   # AI가 생성할 수 있는 리소스 제한 (화이트리스트)
   clusterResourceWhitelist:
