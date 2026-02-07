@@ -3,12 +3,8 @@ kind: Kustomization
 namespace: ai-lounge
 bases:
   - ../../../apps/cloudflare
-secretGenerator:
-  - name: cloudflared-token
-    envs:
-      - .env
+resources:
+  - secret.yaml
 commonLabels:
   app.kubernetes.io/component: cloudflare
   app.kubernetes.io/managed-by: argocd
-generatorOptions:
-  disableNameSuffixHash: true
