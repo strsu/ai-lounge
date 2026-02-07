@@ -19,6 +19,8 @@ metadata:
   namespace: ai-lounge
   labels:
     app: cloudflared
+    app.kubernetes.io/component: cloudflare
+    app.kubernetes.io/managed-by: argocd
 spec:
   replicas: 1
   selector:

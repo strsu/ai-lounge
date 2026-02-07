@@ -7,3 +7,4 @@ resources:
 commonLabels:
   app.kubernetes.io/component: cloudflare
   app.kubernetes.io/managed-by: argocd
+nameSuffix: -cloudflare
