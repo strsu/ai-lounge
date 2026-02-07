@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ai-agent-project
+  namespace: argocd
+spec:
+  description: "AI Agent가 관리하는 프로젝트 전용 격리 환경"
+  # AI가 배포할 수 있는 대상 클러스터와 네임스페이스 제한
+  destinations:
+    - namespace: ai-lounge  # 이 네임스페이스 외에는 배포 불가
+      server: https://kubernetes.default.svc
+  # AI가 생성할 수 있는 리소스 제한 (화이트리스트)
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*' # 네임스페이스 내 일반 리소스는 허용하되, 위 destination에서 차단됨
+  # 소스 저장소 제한
+  sourceRepos:
+    - 'git@github.com:YOUR_ORG/YOUR_REPO.git' # 이 레포 외의 설정은 무시

@@ -1,0 +1,55 @@
+# Cloudflare Tunnel Deployment
+# Cloudflare Tunnel을 사용하여 서비스 노출
+#
+# 사용법:
+# 1. 사용자가 Cloudflare에서 tunnel token 발급
+# 2. Secret 생성: kubectl create secret generic cloudflared-token -n ai-lounge --from-literal=CF_TOKEN=<your-token>
+# 3. Service 생성: kubectl apply -f apps/cloudflare.yaml (최초 한 번만 실행)
+#
+# 주의사항:
+# - 모든 서비스는 서브도메인으로만 접근 가능
+# - Cloudflare Tunnel Pod는 1개만 실행됩니다
+# - 새로운 서비스 추가 시에는 subdomain만 추가하고, Cloudflare Dashboard에서 라우팅 설정
+# - AI 에이전트는 슬랙 채널 C0ACCABRQQ3로 [subdomain], [target_domain:port] 형식으로 요청
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared
+  namespace: ai-lounge
+  labels:
+    app: cloudflared
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared
+  template:
+    metadata:
+      labels:
+        app: cloudflared
+    spec:
+      containers:
+      - name: cloudflared
+        image: cloudflare/cloudflared:latest
+        env:
+        - name: CF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflared-token
+              key: CF_TOKEN
+        args:
+        - tunnel
+        - --no-autoupdate
+        - run
+        - --token
+        - $(CF_TOKEN)
+        - --protocol
+        - http2
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "400m"

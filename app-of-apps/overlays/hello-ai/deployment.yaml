@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-ai
+  namespace: ai-lounge
+  labels:
+    app: hello-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-ai
+  template:
+    metadata:
+      labels:
+        app: hello-ai
+    spec:
+      containers:
+      - name: hello-ai
+        image: hello-ai:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+

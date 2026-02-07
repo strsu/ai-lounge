@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+spec:
+  project: ai-agent-project
+  source:
+    repoURL: 'git@github.com:YOUR_ORG/YOUR_REPO.git'
+    targetRevision: HEAD
+    path: app-of-apps
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
