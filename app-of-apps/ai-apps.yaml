@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: ai-app
-  namespace: ai-lounge
+  namespace: argocd
 spec:
   project: ai-agent-project
   source:
