@@ -6,7 +6,7 @@ metadata:
 spec:
   project: ai-agent-project
   source:
-    repoURL: 'git@github.com:YOUR_ORG/YOUR_REPO.git'
+    repoURL: 'git@github.com:strsu/ai-lounge.git'
     targetRevision: HEAD
     path: app-of-apps
   destination:

@@ -18,4 +18,4 @@ spec:
       kind: '*' # 네임스페이스 내 일반 리소스는 허용하되, 위 destination에서 차단됨
   # 소스 저장소 제한
   sourceRepos:
-    - 'git@github.com:YOUR_ORG/YOUR_REPO.git' # 이 레포 외의 설정은 무시
+    - 'git@github.com:strsu/ai-lounge.git' # 이 레포 외의 설정은 무시
