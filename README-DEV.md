@@ -116,7 +116,7 @@ set -a; source .env; set +a
 ai-lounge/
 ├── app-of-apps/          # 모든 배포 설정 통합 관리
 │   ├── projects.yaml      # ArgoCD AppProject (프로젝트 격리 및 권한 제한)
-│   ├── root-apps.yaml     # ArgoCD Root App 매니페스트
+│   ├── ai-apps.yaml     # ArgoCD Root App 매니페스트
 │   └── overlays/         # 환경별 Kustomization 설정
 │       └── {service}/    # 개별 서비스별 설정
 │           ├── base/     # 기본 설정
@@ -388,12 +388,12 @@ graph LR
 kubectl apply -f app-of-apps/projects.yaml
 
 # 2. Application 적용 (Root App 등록)
-kubectl apply -f app-of-apps/root-apps.yaml
+kubectl apply -f app-of-apps/ai-apps.yaml
 ```
 
 **적용 순서 중요:**
 - `projects.yaml`이 먼저 적용되어야 합니다. 이는 `ai-agent-project`를 정의하여 AI 에이전트가 배포할 수 있는 범위를 제한합니다
-- `root-apps.yaml`은 정의된 `ai-agent-project`를 참조하므로 AppProject가 선행되어야 합니다
+- `ai-apps.yaml`은 정의된 `ai-agent-project`를 참조하므로 AppProject가 선행되어야 합니다
 
 **AppProject 설정:**
 - `ai-agent-project`: AI 에이전트가 관리하는 프로젝트 전용 격리 환경
@@ -482,7 +482,7 @@ args:
 
 ```bash
 # ArgoCD 애플리케이션 상태
-argocd app get root-app
+argocd app get ai-app
 
 # Pod 상태
 kubectl get pods -n ai-lounge -w
@@ -592,10 +592,10 @@ kubectl get events -n ai-lounge --sort-by='.lastTimestamp'
 
 ```bash
 # ArgoCD 애플리케이션 재동기화
-argocd app sync root-app
+argocd app sync ai-app
 
 # 강제 새로고침
-argocd app sync root-app --force
+argocd app sync ai-app --force
 ```
 
 ### Git 관련 문제
@@ -619,8 +619,8 @@ git pull origin main
 ### 최초 설정 (최초 한 번만 수행)
 
 - [ ] AppProject 적용: `kubectl apply -f app-of-apps/projects.yaml`
-- [ ] Application 적용: `kubectl apply -f app-of-apps/root-apps.yaml`
-- [ ] ArgoCD에서 `root-app` 동기화 상태 확인
+- [ ] Application 적용: `kubectl apply -f app-of-apps/ai-apps.yaml`
+- [ ] ArgoCD에서 `ai-app` 동기화 상태 확인
 
 ### 새로운 서비스 배포 시
 

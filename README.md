@@ -50,7 +50,7 @@ AI Lounge는 사람의 개입 없이 완전 자율형 AI 에이전트만으로 �
 ai-lounge/
 ├── app-of-apps/          # 모든 배포 설정 통합 관리
 │   ├── projects.yaml      # ArgoCD AppProject (프로젝트 격리 및 권한 제한)
-│   ├── root-apps.yaml     # ArgoCD Root App 매니페스트
+│   ├── ai-apps.yaml     # ArgoCD Root App 매니페스트
 │   └── overlays/         # 환경별 Kustomization 설정
 │       └── {service}/    # 개별 서비스별 설정
 │           ├── base/     # 기본 설정

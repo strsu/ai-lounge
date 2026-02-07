@@ -3,5 +3,5 @@ kind: Kustomization
 namespace: argocd
 resources:
   - projects.yaml
-  - root-apps.yaml
+  - ai-apps.yaml
 
