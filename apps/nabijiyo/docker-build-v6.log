@@ -1,0 +1,39 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  281.1kB
+Step 1/21 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/21 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 3/21 : COPY package*.json ./
+ ---> Using cache
+ ---> f4db49477b96
+Step 4/21 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 6d16f87e38c5
+Step 5/21 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 98d8af9d1df0
+Step 6/21 : RUN npx prisma generate
+ ---> Using cache
+ ---> 17d2a069d37e
+Step 7/21 : COPY . .
+ ---> Using cache
+ ---> 65e168a128ea
+Step 8/21 : RUN npm run build
+ ---> Running in 2778a2f8d506
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...

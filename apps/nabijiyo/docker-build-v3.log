@@ -2,7 +2,7 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  576.6MB
+Sending build context to Docker daemon  271.4kB
 Step 1/19 : FROM node:18-alpine AS builder
  ---> ee77c6cd7c18
 Step 2/19 : WORKDIR /app
@@ -15,9 +15,9 @@ Step 4/19 : RUN npm ci --legacy-peer-deps
  ---> Using cache
  ---> 6d16f87e38c5
 Step 5/19 : COPY . .
- ---> f3dbecbf7dc6
+ ---> 7c0db938965d
 Step 6/19 : RUN npm run build
- ---> Running in 33593dfc2309
+ ---> Running in 3306faa0c3d6
 
 > nabijiyo@1.0.0 build
 > next build
@@ -28,29 +28,22 @@ You can learn more, including how to opt-out if you'd not like to participate in
 https://nextjs.org/telemetry
 
   ▲ Next.js 14.2.35
-  - Environments: .env
 
    Creating an optimized production build ...
  ✓ Compiled successfully
    Skipping linting
    Checking validity of types ...
-   Collecting page data ...
-[91mReferenceError: File is not defined
-    at 5399 (/app/.next/server/app/api/search/route.js:137:76584)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4424 (/app/.next/server/app/api/search/route.js:137:57858)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 5517 (/app/.next/server/app/api/search/route.js:137:15120)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4016 (/app/.next/server/app/api/search/route.js:137:51219)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 2503 (/app/.next/server/app/api/search/route.js:137:21642)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-[0m[91m
-[0m[91m> Build error occurred
-[0m[91mError: Failed to collect page data for /api/search
-    at /app/node_modules/next/dist/build/utils.js:1269:15
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  type: 'Error'
-}
+[91mFailed to compile.
+
+[0m[91m./src/lib/scrape.ts:180:37
+Type error: Parameter 'sum' implicitly has an 'any' type.
+
+[0m [90m 178 |[39m     [36mconst[39m reviews [33m=[39m cafe[33m.[39mreviews[33m.[39mfilter((r[33m:[39m any) [33m=>[39m r[33m.[39mcategory [33m===[39m category)[0m
+[0m [90m 179 |[39m     [36mif[39m (reviews[33m.[39mlength [33m>[39m [35m0[39m) {[0m
+[0m[31m[1m>[22m[39m[90m 180 |[39m       [36mconst[39m total [33m=[39m reviews[33m.[39mreduce((sum[33m,[39m r) [33m=>[39m sum [33m+[39m r[33m.[39mscore[33m,[39m [35m0[39m)[0m
+[0m [90m     |[39m                                     [31m[1m^[22m[39m[0m
+[0m [90m 181 |[39m       [36mconst[39m avg [33m=[39m total [33m/[39m reviews[33m.[39mlength[0m
+[0m [90m 182 |[39m       categoryScores[category] [33m=[39m {[0m
+[0m [90m 183 |[39m         total[33m,[39m[0m
+[0m[91mNext.js build worker exited with code: 1 and signal: null
 [0mThe command '/bin/sh -c npm run build' returned a non-zero code: 1

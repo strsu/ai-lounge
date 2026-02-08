@@ -8,9 +8,10 @@
 2. [핵심 기능](#핵심-기능)
 3. [기술 스택](#기술-스택)
 4. [시스템 아키텍처](#시스템-아키텍처)
-5. [데이터 수집 전략](#데이터-수집-전략)
-6. [테스트 통과 기준](#테스트-통과-기준)
-7. [기능 요청 절차](#기능-요청-절차)
+5. [서비스 카탈로그](#서비스-카탈로그)
+6. [데이터 수집 전략](#데이터-수집-전략)
+7. [테스트 통과 기준](#테스트-통과-기준)
+8. [기능 요청 절차](#기능-요청-절차)
 
 ---
 
@@ -269,6 +270,104 @@
 
 ---
 
+## 서비스 카탈로그
+
+이 섹션은 AI Lounge 프로젝트의 모든 서비스와 외부 접속 정보를 정리합니다.
+
+### 도메인 정보
+
+- **기본 도메인:** `nabijiyo.com`
+- **Kubernetes Cluster 네임스페이스:** `ai-lounge`
+
+### 서비스 목록
+
+| 서비스 이름 | Subdomain | Kubernetes Service 포트 | 컨테이너 포트 | 내부 접속 주소 | 외부 노출 |
+|------------|-----------|------------------------|--------------|----------------|-----------|
+| **hello-ai** | `hello-ai.nabijiyo.com` | 8080/TCP | 8080 | `hello-ai:8080` | ✅ 예 |
+| **nabijiyo** | `nabijiyo.nabijiyo.com` | 80/TCP | 3000 | `nabijiyo:80` | ✅ 예 |
+| **postgres** | N/A | 5432/TCP | 5432 | `postgres:5432` | ❌ 아니오 |
+
+### 서비스별 상세 정보
+
+#### hello-ai
+- **용도:** AI 기반 맛집 분석 서비스
+- **외부 접속:** https://hello-ai.nabijiyo.com
+- **내부 접속:** http://hello-ai:8080
+- **기술 스택:** Next.js (TypeScript), Prisma
+- **특이사항:** AI API 통합, 스크래핑 서버와 연동
+
+#### nabijiyo
+- **용도:** 메인 웹 애플리케이션 (프론트엔드)
+- **외부 접속:** https://nabijiyo.nabijiyo.com
+- **내부 접속:** http://nabijiyo:80
+- **기술 스택:** Next.js (App Router), Tailwind CSS
+- **특이사항:** 사용자 인터페이스, 관리자 대시보드 포함
+
+#### postgres
+- **용도:** 데이터베이스 서버
+- **내부 접속:** postgres://postgres:5432
+- **기술 스택:** PostgreSQL
+- **특이사항:** 외부 노출되지 않음, 클러스터 내부에서만 접속
+
+### Cloudflare Tunnel 설정
+
+모든 서비스는 Cloudflare Tunnel을 통해서만 외부에 노출됩니다.
+
+#### 설정 개요
+- **Tunnel 유형:** Cloudflare Tunnels (Inbound)
+- **인증 방식:** Cloudflare Origin CA Certificate
+- **TLS 모드:** Full (Strict)
+- **액세스 제어:** Cloudflare Access (Zero Trust)
+
+#### Subdomain 등록 절차
+
+1. **서비스 배포 완료 확인**
+   - Kubernetes Service가 정상적으로 생성되었는지 확인
+   - `kubectl get svc -n ai-lounge` 명령어로 확인
+
+2. **Subdomain 요청 전송**
+   - Slack 채널: `#claw-news` (채널 ID: C0ACCABRQQ3)
+   - 요청 형식: `[subdomain], [target_domain:port]`
+   - 예시: `hello-ai, hello-ai.ai-lounge:8080`
+
+3. **Cloudflare Tunnel 구성**
+   - Cloudflare 관리 콘솔에서 Ingress 규칙 추가
+   - Subdomain → Kubernetes Service 포트 매핑
+
+4. **접속 테스트**
+   - 외부 URL로 접속 테스트
+   - HTTPS 인증서 확인
+   - 로드밸런싱 동작 확인
+
+#### 등록된 Subdomain 요청 메시지
+
+```
+hello-ai, hello-ai.ai-lounge:8080
+nabijiyo, nabijiyo.ai-lounge:80
+```
+
+### 서비스 간 통신
+
+#### 내부 통신 흐름
+```
+사용자 → Cloudflare Tunnel → Ingress → Kubernetes Service → Pod
+```
+
+#### 서비스 간 통신 (내부)
+- `nabijiyo` → `postgres`:5432 (데이터베이스 연결)
+- `hello-ai` → `postgres`:5432 (데이터베이스 연결)
+- `nabijiyo` → `hello-ai`:8080 (AI 서비스 API 호출)
+
+### 보안 고려사항
+
+1. **데이터베이스:** 외부 노출하지 않고 클러스터 내부에서만 접속
+2. **서비스 간 통신:** 내부 DNS 사용 (서비스 이름으로 직접 접속)
+3. **TLS/SSL:** 모든 외부 트래픽은 HTTPS 필수
+4. **인증:** 필요시 Cloudflare Access로 추가 인증 계층 구성
+5. **환경 변수:** 민감 정보는 Kubernetes Secret으로 관리
+
+---
+
 ## 데이터 수집 전략
 
 ### 1. 웹 스크래핑 접근 방식
@@ -373,6 +472,16 @@
 - [ ] 로드밸런싱 정상 작동
 - [ ] 서비스 모니터링 가능
 - [ ] 자동 재배포 기능 (ArgoCD)
+
+#### 7. Subdomain 접속 테스트
+- [ ] HTTPS로 정상 접속 가능
+- [ ] SSL/TLS 인증서 유효함
+- [ ] 서비스 응답 시간이 허용 범위 내
+- [ ] Cloudflare Tunnel을 통한 접속 정상 작동
+- [ ] 내부 서비스 간 통신 정상 작동
+- [ ] 데이터베이스 연결 정상 (내부 접속만)
+- [ ] CORS 설정이 올바르게 구성됨
+- [ ] 사용자 인터페이스 정상 로딩
 
 ### QA 체크리스트
 

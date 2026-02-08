@@ -2,7 +2,7 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  576.6MB
+Sending build context to Docker daemon  274.4kB
 Step 1/19 : FROM node:18-alpine AS builder
  ---> ee77c6cd7c18
 Step 2/19 : WORKDIR /app
@@ -15,9 +15,9 @@ Step 4/19 : RUN npm ci --legacy-peer-deps
  ---> Using cache
  ---> 6d16f87e38c5
 Step 5/19 : COPY . .
- ---> f3dbecbf7dc6
+ ---> 69c9b04c432b
 Step 6/19 : RUN npm run build
- ---> Running in 33593dfc2309
+ ---> Running in ca8642b64b4b
 
 > nabijiyo@1.0.0 build
 > next build
@@ -28,24 +28,23 @@ You can learn more, including how to opt-out if you'd not like to participate in
 https://nextjs.org/telemetry
 
   ▲ Next.js 14.2.35
-  - Environments: .env
 
    Creating an optimized production build ...
  ✓ Compiled successfully
    Skipping linting
    Checking validity of types ...
    Collecting page data ...
-[91mReferenceError: File is not defined
-    at 5399 (/app/.next/server/app/api/search/route.js:137:76584)
+[91mError: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+    at new PrismaClient (/app/node_modules/.prisma/client/default.js:43:11)
+    at 3609 (/app/.next/server/app/api/search/route.js:1:5098)
     at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4424 (/app/.next/server/app/api/search/route.js:137:57858)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 5517 (/app/.next/server/app/api/search/route.js:137:15120)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4016 (/app/.next/server/app/api/search/route.js:137:51219)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 2503 (/app/.next/server/app/api/search/route.js:137:21642)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at i (/app/.next/server/app/api/search/route.js:137:378596)
+    at /app/.next/server/app/api/search/route.js:137:378623
+    at t.X (/app/.next/server/webpack-runtime.js:1:1270)
+    at /app/.next/server/app/api/search/route.js:137:378609
+    at Object.<anonymous> (/app/.next/server/app/api/search/route.js:137:378650)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
 [0m[91m
 [0m[91m> Build error occurred
 [0m[91mError: Failed to collect page data for /api/search

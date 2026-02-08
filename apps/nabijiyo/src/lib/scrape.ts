@@ -175,9 +175,9 @@ export async function analyzeCafeSummary(cafeId: string) {
   const categoryScores: Record<string, { total: number; count: number }> = {}
 
   for (const category of scoreCategories) {
-    const reviews = cafe.reviews.filter(r => r.category === category)
+    const reviews = cafe.reviews.filter((r: any) => r.category === category)
     if (reviews.length > 0) {
-      const total = reviews.reduce((sum, r) => sum + r.score, 0)
+      const total = reviews.reduce((sum: number, r: any) => sum + r.score, 0)
       const avg = total / reviews.length
       categoryScores[category] = {
         total,

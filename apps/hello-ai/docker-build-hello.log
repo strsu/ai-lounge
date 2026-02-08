@@ -1,0 +1,27 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  6.144kB
+Step 1/7 : FROM python:3.12-alpine
+ ---> 602b20fbec78
+Step 2/7 : WORKDIR /app
+ ---> Using cache
+ ---> f52f94dc799e
+Step 3/7 : COPY main.py .
+ ---> Using cache
+ ---> 2b4571bd49b9
+Step 4/7 : EXPOSE 8080
+ ---> Using cache
+ ---> 5f38ee23933a
+Step 5/7 : RUN addgroup -g 1000 appgroup 2>/dev/null || true &&     adduser -u 1000 -G appgroup -h /app -s /bin/sh -D appuser 2>/dev/null || true &&     chown -R appuser:appgroup /app || chown -R root:root /app
+ ---> Using cache
+ ---> 9c8eae15a07e
+Step 6/7 : USER appuser
+ ---> Using cache
+ ---> 3ae0140d37c2
+Step 7/7 : CMD ["python3", "-u", "main.py"]
+ ---> Using cache
+ ---> 0fa6f6f698c9
+Successfully built 0fa6f6f698c9
+Successfully tagged registry.prup.xyz/ai-lounge/hello-ai:v202602081621
