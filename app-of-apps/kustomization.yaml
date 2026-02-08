@@ -9,4 +9,3 @@ resources:
   - overlays/hello-ai
   - overlays/nabijiyo
   - overlays/postgres
-
