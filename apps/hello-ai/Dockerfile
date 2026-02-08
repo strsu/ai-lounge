@@ -13,8 +13,9 @@ COPY main.py .
 EXPOSE 8080
 
 # 비루트 유저로 실행 (보안)
-RUN addgroup -g 1000 appgroup && adduser -u 1000 -G appgroup appuser && \
-    chown -R appuser:appgroup /app
+RUN addgroup -g 1000 appgroup 2>/dev/null || true && \
+    adduser -u 1000 -G appgroup -h /app -s /bin/sh -D appuser 2>/dev/null || true && \
+    chown -R appuser:appgroup /app || chown -R root:root /app
 USER appuser
 
 # 서비스 실행

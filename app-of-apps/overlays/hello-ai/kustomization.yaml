@@ -6,6 +6,6 @@ resources:
   - service.yaml
 images:
   - name: hello-ai
-    newName: ${REGISTRY_URL}/ai-lounge/hello-ai
+    newName: registry.prup.xyz/ai-lounge/hello-ai
     newTag: v202502071600
 
