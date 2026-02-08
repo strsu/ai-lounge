@@ -2,26 +2,41 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  6.144kB
-Step 1/7 : FROM python:3.12-alpine
+Sending build context to Docker daemon   12.8kB
+Step 1/11 : FROM python:3.12-alpine AS builder
  ---> 602b20fbec78
-Step 2/7 : WORKDIR /app
+Step 2/11 : WORKDIR /build
+ ---> Running in beb4259934fd
+ ---> Removed intermediate container beb4259934fd
+ ---> cc5fdb2fa5eb
+Step 3/11 : COPY requirements.txt .
+ ---> 1183c5022130
+Step 4/11 : FROM python:3.12-alpine AS runtime
+ ---> 602b20fbec78
+Step 5/11 : WORKDIR /app
  ---> Using cache
  ---> f52f94dc799e
-Step 3/7 : COPY main.py .
- ---> Using cache
- ---> 2b4571bd49b9
-Step 4/7 : EXPOSE 8080
- ---> Using cache
- ---> 5f38ee23933a
-Step 5/7 : RUN addgroup -g 1000 appgroup 2>/dev/null || true &&     adduser -u 1000 -G appgroup -h /app -s /bin/sh -D appuser 2>/dev/null || true &&     chown -R appuser:appgroup /app || chown -R root:root /app
- ---> Using cache
- ---> 9c8eae15a07e
-Step 6/7 : USER appuser
- ---> Using cache
- ---> 3ae0140d37c2
-Step 7/7 : CMD ["python3", "-u", "main.py"]
- ---> Using cache
- ---> 0fa6f6f698c9
-Successfully built 0fa6f6f698c9
-Successfully tagged registry.prup.xyz/ai-lounge/hello-ai:v202602081621
+Step 6/11 : COPY main.py .
+ ---> 8527aafadcb1
+Step 7/11 : RUN addgroup -g 1000 appgroup &&     adduser -u 1000 -G appgroup -h /app -s /sbin/nologin -D appuser &&     chown -R appuser:appgroup /app
+ ---> Running in c041ae663999
+ ---> Removed intermediate container c041ae663999
+ ---> 44930c49d4d6
+Step 8/11 : EXPOSE 8080
+ ---> Running in a77b2d6303ac
+ ---> Removed intermediate container a77b2d6303ac
+ ---> 9b54472c65b8
+Step 9/11 : USER appuser
+ ---> Running in aa3eb68c4d36
+ ---> Removed intermediate container aa3eb68c4d36
+ ---> fabc97512715
+Step 10/11 : HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3     CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health', timeout=5)" || exit 1
+ ---> Running in 545a9eb45199
+ ---> Removed intermediate container 545a9eb45199
+ ---> 4062060e6d88
+Step 11/11 : CMD ["python3", "-u", "main.py"]
+ ---> Running in 502063e804d2
+ ---> Removed intermediate container 502063e804d2
+ ---> b2a032bac89d
+Successfully built b2a032bac89d
+Successfully tagged registry.prup.xyz/ai-lounge/hello-ai:v202602081651

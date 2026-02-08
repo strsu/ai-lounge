@@ -5,13 +5,19 @@ metadata:
   namespace: ai-lounge
   labels:
     app: hello-ai
+    version: "1.0.0"
+    environment: "production"
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
 spec:
   type: ClusterIP
   selector:
     app: hello-ai
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 8080
-    targetPort: 8080
-    name: http
-
+    targetPort: http
+    appProtocol: http
