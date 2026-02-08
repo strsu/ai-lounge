@@ -1,5 +1,6 @@
 import axios from 'axios'
 import * as cheerio from 'cheerio'
+import { prisma } from './prisma'
 
 interface NaverBlogScrapedData {
   cafeName: string
@@ -57,6 +58,7 @@ export async function scrapeNaverBlog(query: string): Promise<NaverBlogScrapedDa
             thumbnail: $el.find('img').attr('src'),
             summary: $el.find('.sh_blog_write').text().trim(),
           },
+          cafeName: '', // 초기값 설정 (상세 페이지에서 추출됨)
         })
       }
     })
@@ -191,8 +193,8 @@ export async function analyzeCafeSummary(cafeId: string) {
   }
 
   // DO/DONT 정리
-  const doSummary = [...new Set(doPoints)].slice(0, 5).join(', ')
-  const dontSummary = [...new Set(dontPoints)].slice(0, 5).join(', ')
+  const doSummary = Array.from(new Set(doPoints)).slice(0, 5).join(', ')
+  const dontSummary = Array.from(new Set(dontPoints)).slice(0, 5).join(', ')
 
   // 총점 계산
   const overallScore = Object.values(categoryScores).reduce((sum, item) => sum + item.total, 0) /

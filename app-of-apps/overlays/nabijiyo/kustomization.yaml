@@ -2,10 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: ai-lounge
 resources:
+  - db-secret.yaml
   - deployment.yaml
   - service.yaml
-  - registry-secret.yaml
 images:
   - name: nabijiyo
-    newName: ${REGISTRY_URL}/ai-lounge/nabijiyo
+    newName: registry.prup.xyz/ai-lounge/nabijiyo
     newTag: latest
