@@ -1,0 +1,6 @@
+# Chat History Viewer 서비스 의존성
+
+# PostgreSQL 드라이버
+psycopg2-binary>=2.9.0
+
+# 추가 라이브러리가 필요한 경우 여기에 추가
