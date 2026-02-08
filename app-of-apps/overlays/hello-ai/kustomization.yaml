@@ -8,5 +8,5 @@ resources:
 images:
   - name: hello-ai
     newName: registry.prup.xyz/ai-lounge/hello-ai
-    newTag: v202502071600
+    newTag: v202602081252
 

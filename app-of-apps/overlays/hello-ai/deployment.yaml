@@ -15,11 +15,11 @@ spec:
       labels:
         app: hello-ai
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - name: hello-ai
         image: hello-ai:latest
-      imagePullSecrets:
-      - name: regcred
         ports:
         - containerPort: 8080
           name: http

@@ -4,6 +4,7 @@ namespace: ai-lounge
 resources:
   - deployment.yaml
   - service.yaml
+  - registry-secret.yaml
 images:
   - name: nabijiyo
     newName: ${REGISTRY_URL}/ai-lounge/nabijiyo
