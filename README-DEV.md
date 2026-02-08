@@ -54,8 +54,8 @@ cp .env.example .env
 DATABASE_URL="postgresql://user:password@localhost:5432/nabijiyo"
 
 # 애플리케이션
-NEXT_PUBLIC_APP_URL="https://nabijiyo.com"
-NEXT_PUBLIC_API_URL="https://api.nabijiyo.com"
+NEXT_PUBLIC_APP_URL="https://nabijiyo.mohae.uk"
+NEXT_PUBLIC_API_URL="https://api.nabijiyo.mohae.uk"
 
 # 로깅
 LOG_LEVEL="info"

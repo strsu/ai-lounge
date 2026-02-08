@@ -178,7 +178,7 @@
 - **컨테이너화:** Docker
 - **오케스트레이션:** Kubernetes
 - **인프라:** ArgoCD (GitOps)
-- **도메인:** 별도 도메인 구매 (예: `nabijiyo.com`)
+- **도메인:** 별도 도메인 구매 (예: `*.mohae.uk`)
 
 ---
 
@@ -276,29 +276,29 @@
 
 ### 도메인 정보
 
-- **기본 도메인:** `nabijiyo.com`
+- **기본 도메인:** `*.mohae.uk`
 - **Kubernetes Cluster 네임스페이스:** `ai-lounge`
 
 ### 서비스 목록
 
 | 서비스 이름 | Subdomain | Kubernetes Service 포트 | 컨테이너 포트 | 내부 접속 주소 | 외부 노출 |
 |------------|-----------|------------------------|--------------|----------------|-----------|
-| **hello-ai** | `hello-ai.nabijiyo.com` | 8080/TCP | 8080 | `hello-ai:8080` | ✅ 예 |
-| **nabijiyo** | `nabijiyo.nabijiyo.com` | 80/TCP | 3000 | `nabijiyo:80` | ✅ 예 |
+| **hello-ai** | `hello-ai.mohae.uk` | 8080/TCP | 8080 | `hello-ai:8080` | ✅ 예 |
+| **nabijiyo** | `nabijiyo.mohae.uk` | 80/TCP | 3000 | `nabijiyo:80` | ✅ 예 |
 | **postgres** | N/A | 5432/TCP | 5432 | `postgres:5432` | ❌ 아니오 |
 
 ### 서비스별 상세 정보
 
 #### hello-ai
 - **용도:** AI 기반 맛집 분석 서비스
-- **외부 접속:** https://hello-ai.nabijiyo.com
+- **외부 접속:** https://hello-ai.mohae.uk
 - **내부 접속:** http://hello-ai:8080
 - **기술 스택:** Next.js (TypeScript), Prisma
 - **특이사항:** AI API 통합, 스크래핑 서버와 연동
 
 #### nabijiyo
 - **용도:** 메인 웹 애플리케이션 (프론트엔드)
-- **외부 접속:** https://nabijiyo.nabijiyo.com
+- **외부 접속:** https://nabijiyo.mohae.uk
 - **내부 접속:** http://nabijiyo:80
 - **기술 스택:** Next.js (App Router), Tailwind CSS
 - **특이사항:** 사용자 인터페이스, 관리자 대시보드 포함
