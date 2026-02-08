@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cafe {
+  id          String     @id @default(uuid())
+  name        String
+  address     String?
+  phone       String?
+  description String?
+  hours       String?
+  menu        Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  posts       Post[]
+  reviews     Review[]
+  summary     Summary?
+}
+
+model Post {
+  id         String     @id @default(uuid())
+  cafeId     String
+  cafe       Cafe       @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+  source     String     // naver_blog, naver_knowledge, instagram
+  url        String
+  title      String?
+  content    String?
+  thumbnail  String?
+  metadata   Json?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  reviews    Review[]
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  cafeId     String
+  cafe       Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+  postId     String
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category   String   // taste, service, value, cleanliness
+  score      Int      // 1-5
+  description String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Summary {
+  id           String   @id @default(uuid())
+  cafeId       String   @unique
+  cafe         Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
+  doPoints     Json     // 공통점
+  dontPoints   Json     // 차이점
+  warnings     Json     // 주의사항
+  overallScore Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
