@@ -4,6 +4,7 @@ namespace: ai-lounge
 resources:
   - deployment.yaml
   - service.yaml
+  - registry-secret.yaml
 images:
   - name: hello-ai
     newName: registry.prup.xyz/ai-lounge/hello-ai

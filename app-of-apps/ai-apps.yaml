@@ -16,4 +16,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSync=true
+    imageChange: true
+    imageChangeStrategy: Automatic
 
