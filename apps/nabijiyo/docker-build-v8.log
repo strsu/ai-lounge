@@ -1,0 +1,58 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  294.9kB
+Step 1/20 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/20 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 3/20 : COPY package*.json ./
+ ---> Using cache
+ ---> f4db49477b96
+Step 4/20 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 6d16f87e38c5
+Step 5/20 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 98d8af9d1df0
+Step 6/20 : COPY . .
+ ---> 461124fc25da
+Step 7/20 : RUN npm run build
+ ---> Running in 4a6c6f9953bd
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+[91mError: @prisma/client did not initialize yet. Please run "prisma generate" and try to import it again.
+    at new PrismaClient (/app/node_modules/.prisma/client/default.js:43:11)
+    at 6402 (/app/.next/server/app/api/search/route.js:1:574)
+    at t (/app/.next/server/webpack-runtime.js:1:127)
+    at r (/app/.next/server/app/api/search/route.js:12:15641)
+    at /app/.next/server/app/api/search/route.js:12:15668
+    at t.X (/app/.next/server/webpack-runtime.js:1:1191)
+    at /app/.next/server/app/api/search/route.js:12:15654
+    at Object.<anonymous> (/app/.next/server/app/api/search/route.js:12:15695)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+[0m[91m
+[0m[91m> Build error occurred
+[0m[91mError: Failed to collect page data for /api/search
+    at /app/node_modules/next/dist/build/utils.js:1269:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  type: 'Error'
+}
+[0mThe command '/bin/sh -c npm run build' returned a non-zero code: 1

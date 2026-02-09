@@ -1,0 +1,90 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  302.1kB
+Step 1/20 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/20 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 3/20 : COPY package*.json ./
+ ---> Using cache
+ ---> f4db49477b96
+Step 4/20 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 6d16f87e38c5
+Step 5/20 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 98d8af9d1df0
+Step 6/20 : RUN npx prisma generate
+ ---> Using cache
+ ---> 17d2a069d37e
+Step 7/20 : COPY . .
+ ---> 6d27c7735829
+Step 8/20 : RUN npm run build
+ ---> Running in a60086c35427
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/4) ...
+   Generating static pages (1/4) 
+   Generating static pages (2/4) 
+   Generating static pages (3/4) 
+ ✓ Generating static pages (4/4)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.67 kB        88.9 kB
+├ ○ /_not-found                          873 B          88.1 kB
+└ ƒ /api/search                          0 B                0 B
++ First Load JS shared by all            87.2 kB
+  ├ chunks/117-29466efefd806f9c.js       31.7 kB
+  ├ chunks/fd9d1056-3eee857bde8f3b06.js  53.6 kB
+  └ other shared chunks (total)          1.86 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container a60086c35427
+ ---> 1a90f5c62573
+Step 9/20 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 10/20 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 11/20 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> eddd87d13127
+Step 12/20 : COPY --from=builder /app/node_modules ./node_modules
+ ---> Using cache
+ ---> 23c9625a5585
+Step 13/20 : COPY --from=builder /app/.next ./.next
+ ---> 062e74fd07c9
+Step 14/20 : COPY --from=builder /app/package.json ./package.json
+ ---> 015a2280c763
+Step 15/20 : COPY --from=builder /app/prisma ./prisma
+ ---> fab7127f1e16
+Step 16/20 : EXPOSE 3000
+ ---> Running in 1e9f48d25117
+ ---> Removed intermediate container 1e9f48d25117
+ ---> 115a7f9e1671
+Step 17/20 : RUN addgroup -g 1000 appgroup &&     adduser -u 1000 -G appgroup -h /app -s /sbin/nologin -D appuser &&     chown -R appuser:appgroup /app
+ ---> Running in 384c541f760b
+[91maddgroup: gid '1000' in use
+[0mThe command '/bin/sh -c addgroup -g 1000 appgroup &&     adduser -u 1000 -G appgroup -h /app -s /sbin/nologin -D appuser &&     chown -R appuser:appgroup /app' returned a non-zero code: 1

@@ -1,48 +1,54 @@
-# Build stage
+# ========================================
+# Stage 1: Builder (빌드 단계)
+# ========================================
 FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# 의존성 파일 복사
 COPY package*.json ./
 
-# Install dependencies
+# 의존성 설치
 RUN npm ci --legacy-peer-deps
 
-# Copy prisma schema
+# Prisma 스키마 복사
 COPY prisma ./prisma
 
-# Generate Prisma client
+# Prisma 클라이언트 생성
 RUN npx prisma generate
 
-# Copy source code
+# 소스 코드 복사
 COPY . .
 
-# Build Next.js application
+# Next.js 빌드
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine AS runner
+# ========================================
+# Stage 2: Runtime (실행 단계)
+# ========================================
+FROM node:18-alpine AS runtime
 
 WORKDIR /app
 
-ENV NODE_ENV production
+# 환경 변수 설정
+ENV NODE_ENV=production
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# node_modules 복사
+COPY --from=builder /app/node_modules ./node_modules
 
-# Copy built files
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# 빌드된 파일 복사
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./package.json
 
-# Change ownership
-USER nextjs
+# Prisma 복사
+COPY --from=builder /app/prisma ./prisma
 
+# 포트 노출
 EXPOSE 3000
 
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+# 헬스 체크
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
 
-CMD ["node", "server.js"]
+# 서비스 실행
+CMD ["npm", "start"]

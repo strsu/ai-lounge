@@ -1,0 +1,15 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  292.4kB
+Step 1/20 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/20 : RUN apk add --no-cache openssl1.1-compat
+ ---> Running in 798e06558bef
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+[91mERROR: unable to select packages:
+  openssl1.1-compat (no such package):
+    required by: world[openssl1.1-compat]
+[0mThe command '/bin/sh -c apk add --no-cache openssl1.1-compat' returned a non-zero code: 1

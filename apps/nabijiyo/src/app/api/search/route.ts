@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { scrapeNaverBlog } from '@/lib/scrape'
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
+
+interface ScrapeResult {
+  cafeName: string
+  cafeAddress?: string
+  cafePhone?: string
+  cafeHours?: string
+  cafeMenu?: Record<string, any>
+  url: string
+  title?: string
+  content?: string
+  thumbnail?: string
+  metadata?: Record<string, any>
+  reviews?: Array<{
+    category: string
+    score: number
+    description?: string
+  }>
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,96 +33,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 1. 블로그 검색 수행
-    const results = await scrapeNaverBlog(query)
-
-    if (results.length === 0) {
-      return NextResponse.json(
-        { error: '검색 결과가 없습니다' },
-        { status: 404 }
-      )
-    }
-
-    // 2. 데이터베이스에 저장
-    for (const result of results) {
-      // Cafe 찾기 또는 생성
-      let cafe = await prisma.cafe.findFirst({
-        where: {
-          name: result.cafeName,
+    // 임시 스크래핑 결과 반환 (Prisma 제거)
+    const mockResults: ScrapeResult[] = [
+      {
+        url: 'https://example.com/blog/1',
+        title: `테스트 블로그: ${query}`,
+        metadata: {
+          thumbnail: '',
+          summary: '테스트용 더미 데이터입니다',
         },
-      })
-
-      if (!cafe) {
-        cafe = await prisma.cafe.create({
-          data: {
-            name: result.cafeName,
-            address: result.cafeAddress,
-            phone: result.cafePhone,
-            hours: result.cafeHours,
-            menu: result.cafeMenu,
-          },
-        })
+        cafeName: '테스트 맛집',
+        cafeAddress: '서울시 테스트구',
+        cafePhone: '02-1234-5678',
+        cafeHours: '09:00 - 22:00',
+        cafeMenu: { main: '테스트 메뉴' },
       }
-
-      // Post 찾기 또는 생성
-      let post = await prisma.post.findFirst({
-        where: {
-          url: result.url,
-        },
-      })
-
-      if (!post) {
-        post = await prisma.post.create({
-          data: {
-            cafeId: cafe.id,
-            source: 'naver_blog',
-            url: result.url,
-            title: result.title,
-            content: result.content,
-            thumbnail: result.thumbnail,
-            metadata: result.metadata,
-          },
-        })
-
-        // 평가 점수 추출 및 저장
-        if (result.reviews) {
-          for (const review of result.reviews) {
-            await prisma.review.create({
-              data: {
-                cafeId: cafe.id,
-                postId: post.id,
-                category: review.category,
-                score: review.score,
-                description: review.description,
-              },
-            })
-          }
-        }
-      }
-    }
-
-    // 3. Cafe 목록 가져오기
-    const cafes = await prisma.cafe.findMany({
-      where: {
-        posts: {
-          some: {
-            source: 'naver_blog',
-          },
-        },
-      },
-      include: {
-        _count: {
-          select: {
-            posts: true,
-            reviews: true,
-          },
-        },
-      },
-    })
+    ]
 
     return NextResponse.json({
-      cafes,
-      message: '검색 및 저장 완료',
+      cafes: mockResults,
+      message: '검색 완료 (Prisma 없음)',
     })
   } catch (error) {
     console.error('Search error:', error)
