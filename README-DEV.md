@@ -65,14 +65,27 @@ SCRAPING_DELAY_MS="2000"
 SCRAPING_MAX_RETRIES="3"
 ```
 
-### 5. 데이터베이스 마이그레이션 실행
+### 5. Kubernetes 환경 설정
+
+```bash
+# kubectl 설정 파일 지정
+export KUBECONFIG=~/.kube/ai-lounge-kubeconfig
+
+# 설정 확인
+kubectl config current-context
+kubectl cluster-info
+```
+
+**참고:** `~/.kube/ai-lounge-kubeconfig` 파일은 AI Lounge 프로젝트의 Kubernetes 클러스터 접속에 필요한 설정 파일입니다.
+
+### 6. 데이터베이스 마이그레이션 실행
 
 ```bash
 # Prisma 마이그레이션 실행
 npx prisma migrate dev --name init
 ```
 
-### 6. 개발 서버 실행
+### 7. 개발 서버 실행
 
 ```bash
 # 개발 서버 시작
@@ -325,6 +338,17 @@ npx prisma studio
 
 ## 배포 절차
 
+### 0. kubectl 환경 설정
+
+```bash
+# KUBECONFIG 설정
+export KUBECONFIG=~/.kube/ai-lounge-kubeconfig
+
+# 설정 확인
+kubectl config current-context
+kubectl get nodes
+```
+
 ### 1. 이미지 빌드
 
 ```bash
@@ -373,6 +397,9 @@ kubectl logs -n argocd -l app.kubernetes.io/name=argocd-server
 ### 6. 배포 확인
 
 ```bash
+# KUBECONFIG 설정 (이미 설정되어 있다면 생략 가능)
+export KUBECONFIG=~/.kube/ai-lounge-kubeconfig
+
 # 서비스 확인
 kubectl get pods -n {namespace}
 
@@ -527,6 +554,48 @@ docker logs <container-id>
 - [ArgoCD 문서](https://argoproj.github.io/argo-cd/)
 - [Cheerio 문서](https://cheerio.js.org/)
 - [Axios 문서](https://axios-http.com/)
+
+## kubectl 빠른 참조
+
+### 기본 설정
+
+```bash
+# KUBECONFIG 설정
+export KUBECONFIG=~/.kube/ai-lounge-kubeconfig
+
+# 현재 컨텍스트 확인
+kubectl config current-context
+
+# 클러스터 정보 확인
+kubectl cluster-info
+```
+
+### 주요 명령어
+
+```bash
+# Pod 상태 확인
+kubectl get pods -n ai-lounge
+
+# Pod 상태 모니터링
+kubectl get pods -n ai-lounge -w
+
+# 로그 확인
+kubectl logs -f deployment/<service-name> -n ai-lounge
+
+# 서비스 확인
+kubectl get svc -n ai-lounge
+
+# 이벤트 확인
+kubectl get events -n ai-lounge --sort-by=.metadata.creationTimestamp
+```
+
+### 헬스 체크
+
+```bash
+# 서비스 엔드포인트 확인
+ENDPOINT=$(kubectl get svc -n ai-lounge <service-name> -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+curl ${ENDPOINT}/health
+```
 
 ---
 
