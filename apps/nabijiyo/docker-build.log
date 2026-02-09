@@ -2,22 +2,28 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  576.6MB
-Step 1/19 : FROM node:18-alpine AS builder
+Sending build context to Docker daemon  576.7MB
+Step 1/17 : FROM node:18-alpine AS builder
  ---> ee77c6cd7c18
-Step 2/19 : WORKDIR /app
+Step 2/17 : WORKDIR /app
  ---> Using cache
  ---> b618f0508d9b
-Step 3/19 : COPY package*.json ./
+Step 3/17 : COPY package*.json ./
  ---> Using cache
  ---> f4db49477b96
-Step 4/19 : RUN npm ci --legacy-peer-deps
+Step 4/17 : RUN npm ci --legacy-peer-deps
  ---> Using cache
  ---> 6d16f87e38c5
-Step 5/19 : COPY . .
- ---> f3dbecbf7dc6
-Step 6/19 : RUN npm run build
- ---> Running in 33593dfc2309
+Step 5/17 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 98d8af9d1df0
+Step 6/17 : RUN npx prisma generate
+ ---> Using cache
+ ---> 17d2a069d37e
+Step 7/17 : COPY . .
+ ---> e5c63c8eb150
+Step 8/17 : RUN npm run build
+ ---> Running in 71416e50d9a4
 
 > nabijiyo@1.0.0 build
 > next build
@@ -35,22 +41,55 @@ https://nextjs.org/telemetry
    Skipping linting
    Checking validity of types ...
    Collecting page data ...
-[91mReferenceError: File is not defined
-    at 5399 (/app/.next/server/app/api/search/route.js:137:76584)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4424 (/app/.next/server/app/api/search/route.js:137:57858)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 5517 (/app/.next/server/app/api/search/route.js:137:15120)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 4016 (/app/.next/server/app/api/search/route.js:137:51219)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-    at 2503 (/app/.next/server/app/api/search/route.js:137:21642)
-    at t (/app/.next/server/webpack-runtime.js:1:142)
-[0m[91m
-[0m[91m> Build error occurred
-[0m[91mError: Failed to collect page data for /api/search
-    at /app/node_modules/next/dist/build/utils.js:1269:15
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
-  type: 'Error'
-}
-[0mThe command '/bin/sh -c npm run build' returned a non-zero code: 1
+   Generating static pages (0/5) ...
+   Generating static pages (1/5) 
+   Generating static pages (2/5) 
+   Generating static pages (3/5) 
+ ✓ Generating static pages (5/5)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.67 kB        88.9 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ○ /api/health                          0 B                0 B
+└ ƒ /api/search                          0 B                0 B
++ First Load JS shared by all            87.2 kB
+  ├ chunks/117-29466efefd806f9c.js       31.7 kB
+  ├ chunks/fd9d1056-3eee857bde8f3b06.js  53.6 kB
+  └ other shared chunks (total)          1.86 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container 71416e50d9a4
+ ---> bae35e700d65
+Step 9/17 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 10/17 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 11/17 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> eddd87d13127
+Step 12/17 : COPY --from=builder /app/node_modules ./node_modules
+ ---> Using cache
+ ---> ae2f53450b0b
+Step 13/17 : COPY --from=builder /app/package.json ./package.json
+ ---> Using cache
+ ---> 9af46d5ed657
+Step 14/17 : COPY --from=builder /app/prisma ./prisma
+ ---> Using cache
+ ---> 08b907bb0d9a
+Step 15/17 : EXPOSE 3000
+ ---> Using cache
+ ---> a0022794b69a
+Step 16/17 : HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3     CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
+ ---> Using cache
+ ---> e6e3e685ca00
+Step 17/17 : CMD ["npm", "start"]
+ ---> Using cache
+ ---> 85fe986a4f33
+Successfully built 85fe986a4f33
+Successfully tagged registry.prup.xyz/ai-lounge/nabijiyo:latest

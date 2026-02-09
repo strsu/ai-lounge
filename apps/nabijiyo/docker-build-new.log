@@ -2,7 +2,7 @@ DEPRECATED: The legacy builder is deprecated and will be removed in a future rel
             Install the buildx component to build images with BuildKit:
             https://docs.docker.com/go/buildx/
 
-Sending build context to Docker daemon  576.6MB
+Sending build context to Docker daemon  314.4kB
 Step 1/19 : FROM node:18-alpine AS builder
  ---> ee77c6cd7c18
 Step 2/19 : WORKDIR /app
@@ -14,4 +14,51 @@ Step 3/19 : COPY package*.json ./
 Step 4/19 : RUN npm ci --legacy-peer-deps
  ---> Using cache
  ---> 6d16f87e38c5
-Step 5/19 : COPY . .
+Step 5/19 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 98d8af9d1df0
+Step 6/19 : RUN npx prisma generate
+ ---> Using cache
+ ---> 17d2a069d37e
+Step 7/19 : COPY . .
+ ---> Using cache
+ ---> 67d124598742
+Step 8/19 : RUN npm run build
+ ---> Using cache
+ ---> 0c3ac473a449
+Step 9/19 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 10/19 : WORKDIR /app
+ ---> Using cache
+ ---> b618f0508d9b
+Step 11/19 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> eddd87d13127
+Step 12/19 : COPY --from=builder /app/node_modules ./node_modules
+ ---> Using cache
+ ---> 23c9625a5585
+Step 13/19 : COPY --from=builder /app/.next ./.next
+ ---> Using cache
+ ---> 7565c84da26e
+Step 14/19 : RUN [ ! -d /app/public ] || mkdir -p ./public && [ ! -d /app/public ] || cp -r /app/public/* ./public/
+ ---> Running in e84b07ced9ef
+ ---> Removed intermediate container e84b07ced9ef
+ ---> 641b8507d2c8
+Step 15/19 : COPY --from=builder /app/package.json ./package.json
+ ---> 806841e56aac
+Step 16/19 : COPY --from=builder /app/prisma ./prisma
+ ---> 43e38fbda5ab
+Step 17/19 : EXPOSE 3000
+ ---> Running in 39aeff42a1fe
+ ---> Removed intermediate container 39aeff42a1fe
+ ---> 4ac3977c1f78
+Step 18/19 : HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3     CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
+ ---> Running in fcc5820c62bd
+ ---> Removed intermediate container fcc5820c62bd
+ ---> 4649fb0052d0
+Step 19/19 : CMD ["npm", "start"]
+ ---> Running in 43494f9ecb96
+ ---> Removed intermediate container 43494f9ecb96
+ ---> 7f11770e2c9e
+Successfully built 7f11770e2c9e
+Successfully tagged registry.prup.xyz/ai-lounge/nabijiyo:v202602091946

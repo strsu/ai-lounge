@@ -39,8 +39,8 @@ COPY --from=builder /app/node_modules ./node_modules
 # .next 디렉토리 복사
 COPY --from=builder /app/.next ./.next
 
-# public 디렉토리 복사
-COPY --from=builder /app/public ./public
+# public 디렉토리 복사 (존재하는 경우에만)
+RUN [ ! -d /app/public ] || mkdir -p ./public && [ ! -d /app/public ] || cp -r /app/public/* ./public/
 
 # package.json 복사
 COPY --from=builder /app/package.json ./package.json
