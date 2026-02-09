@@ -18,7 +18,7 @@ spec:
       - name: regcred-new
       containers:
       - name: nabijiyo
-        image: registry.prup.xyz/ai-lounge/nabijiyo:latest
+        image: registry.prup.xyz/ai-lounge/nabijiyo:v202602090020
         ports:
         - containerPort: 3000
         env:
