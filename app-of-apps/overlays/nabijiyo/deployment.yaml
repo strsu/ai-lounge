@@ -38,6 +38,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        imagePullPolicy: Always
         livenessProbe:
           httpGet:
             path: /api/health
