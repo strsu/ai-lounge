@@ -618,6 +618,50 @@ curl ${ENDPOINT}/health
 
 ---
 
+## kubectl 빠른 참조
+
+### 기본 설정
+
+```bash
+# KUBECONFIG 설정
+export KUBECONFIG=~/.kube/ai-lounge-kubeconfig
+
+# 현재 컨텍스트 확인
+kubectl config current-context
+
+# 클러스터 정보 확인
+kubectl cluster-info
+```
+
+### 주요 명령어
+
+```bash
+# Pod 상태 확인
+kubectl get pods -n ai-lounge
+
+# Pod 상태 모니터링
+kubectl get pods -n ai-lounge -w
+
+# 로그 확인
+kubectl logs -f deployment/<service-name> -n ai-lounge
+
+# 서비스 확인
+kubectl get svc -n ai-lounge
+
+# 이벤트 확인
+kubectl get events -n ai-lounge --sort-by=.metadata.creationTimestamp
+```
+
+### 헬스 체크
+
+```bash
+# 서비스 엔드포인트 확인
+ENDPOINT=$(kubectl get svc -n ai-lounge <service-name> -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+curl ${ENDPOINT}/health
+```
+
+---
+
 **마지막 업데이트:** 2026-02-08
 
 ---
