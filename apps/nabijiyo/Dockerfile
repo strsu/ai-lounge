@@ -36,8 +36,13 @@ ENV NODE_ENV=production
 # node_modules 복사
 COPY --from=builder /app/node_modules ./node_modules
 
-# 빌드된 파일 복사
+# .next 디렉토리 복사
 COPY --from=builder /app/.next ./.next
+
+# public 디렉토리 복사
+COPY --from=builder /app/public ./public
+
+# package.json 복사
 COPY --from=builder /app/package.json ./package.json
 
 # Prisma 복사
