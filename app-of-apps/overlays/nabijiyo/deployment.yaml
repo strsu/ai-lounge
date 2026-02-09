@@ -15,7 +15,7 @@ spec:
         app: nabijiyo
     spec:
       imagePullSecrets:
-      - name: regcred-new
+      - name: regcred
       containers:
       - name: nabijiyo
         image: registry.prup.xyz/ai-lounge/nabijiyo:v202602090020
