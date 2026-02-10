@@ -8,8 +8,8 @@ WORKDIR /app
 # 의존성 파일 복사 (레이어 캐싱 최적화)
 COPY package*.json ./
 
-# 의존성 설치 (legacy-peer-deps 사용)
-RUN npm ci --legacy-peer-deps && npm cache clean --force
+# 의존성 설치 (캐싱 제거하지 않음)
+RUN npm ci --legacy-peer-deps
 
 # Prisma 스키마 복사
 COPY prisma ./prisma
@@ -21,8 +21,7 @@ RUN npx prisma generate
 COPY . .
 
 # Next.js 빌드 (캐시 제거 포함)
-RUN npm run build && \
-    rm -rf /app/.next/cache
+RUN npm run build
 
 # 불필요한 파일 삭제
 RUN rm -rf /app/node_modules/.prisma

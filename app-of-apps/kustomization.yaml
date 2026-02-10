@@ -6,5 +6,6 @@ resources:
   - projects.yaml
   - ai-apps.yaml
   - overlays/cloudflare
+  - overlays/hello-ai
   - overlays/nabijiyo
   - overlays/postgres

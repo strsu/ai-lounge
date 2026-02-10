@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import { analyzeDoDont, DoDontResult } from '@/lib/analysis';
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
@@ -25,6 +28,7 @@ export interface ScrapeResult {
   thumbnail?: string
   metadata?: Record<string, any>
   reviews?: ReviewInfo[]
+  doDont?: DoDontResult;
 }
 
 export async function POST(request: NextRequest) {
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest) {
     const knowledgePosts = await scrapeNaverKnowledgeSearch(query, 5)
 
     // 3. 포스팅 정보 추출
-    const processedPosts: ScrapeResult[] = []
+    const processedPosts: ScrapeResult[] = [];
 
     // 블로그 포스팅 처리
     for (const post of blogPosts) {
@@ -54,11 +58,13 @@ export async function POST(request: NextRequest) {
 
       const cafeInfo = extractCafeInfo(post.content)
       const reviews = extractReviews(post.content)
+      const doDont = analyzeDoDont(post.content);
 
       processedPosts.push({
         ...post,
         cafeInfo,
         reviews,
+        doDont,
         metadata: {
           ...post.metadata,
           source: 'naver_blog',
@@ -72,11 +78,13 @@ export async function POST(request: NextRequest) {
 
       const cafeInfo = extractCafeInfo(post.content)
       const reviews = extractReviews(post.content)
+      const doDont = analyzeDoDont(post.content);
 
       processedPosts.push({
         ...post,
         cafeInfo,
         reviews,
+        doDont,
         metadata: {
           ...post.metadata,
           source: 'naver_knowledge',
