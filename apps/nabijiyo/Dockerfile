@@ -8,7 +8,7 @@ WORKDIR /app
 # 의존성 파일 복사 (레이어 캐싱 최적화)
 COPY package*.json ./
 
-# 의존성 설치
+# 의존성 설치 (legacy-peer-deps 사용)
 RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 # Prisma 스키마 복사
@@ -42,9 +42,6 @@ ENV NODE_ENV=production
 
 # .next/standalone 디렉토리 전체 복사
 COPY --from=builder /app/.next/standalone ./
-
-# .next static 파일 복사 (standalone에 포함되지 않음)
-COPY --from=builder /app/.next/static ./.next/static
 
 # 포트 노출
 EXPOSE 3000
