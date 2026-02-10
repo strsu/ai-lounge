@@ -303,6 +303,17 @@
 - **기술 스택:** Next.js (App Router), Tailwind CSS
 - **특이사항:** 사용자 인터페이스, 관리자 대시보드 포함
 
+### 서비스 제거 및 스크래핑 로직 개선
+
+#### hello-ai 서비스 제거
+1.  Kubernetes Deployment 및 Service 삭제: `kubectl delete deployment hello-ai -n ai-lounge` 및 `kubectl delete service hello-ai -n ai-lounge` 명령어를 실행하여 삭제했습니다.
+2.  ArgoCD 설정에서 `hello-ai` 제거: `app-of-apps/kustomization.yaml`에서 `hello-ai`를 제거하고 Git에 커밋 및 푸시했습니다.
+
+#### nabijiyo 스크래핑 로직 개선
+-   `PostInfo` 인터페이스에 `reviews` 속성을 추가하여 타입 에러를 해결했습니다.
+-   `/api/health` 엔드포인트의 경우 이미 구현되어 있습니다.
+-   현재 진행 중인 작업: Docker 이미지 재빌드
+
 #### postgres
 - **용도:** 데이터베이스 서버
 - **내부 접속:** postgres://postgres:5432
