@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ai-lounge
+resources:
+  - ../../app-of-apps/overlays/nabijiyo/deployment.yaml
+  - ../../app-of-apps/overlays/nabijiyo/service.yaml
+images:
+  - name: nabijiyo
+    newName: registry.prup.xyz/ai-lounge/nabijiyo
+    newTag: latest
