@@ -184,9 +184,11 @@ function extractEvaluationCriteriaPoints(posts: PostInfo[]): string[] {
   // 첫 번째 포스팅의 평가 기준 추출
   if (posts.length > 0 && posts[0].reviews) {
     const firstPost = posts[0]
-    for (const review of firstPost.reviews) {
-      if (!evaluationCriteriaPoints.includes(review.category)) {
-        evaluationCriteriaPoints.push(`${review.category}: ${review.score}`)
+    if (firstPost.reviews) {
+      for (const review of firstPost.reviews) {
+        if (!evaluationCriteriaPoints.includes(review.category)) {
+          evaluationCriteriaPoints.push(`${review.category}: ${review.score}`)
+        }
       }
     }
   }
@@ -194,9 +196,11 @@ function extractEvaluationCriteriaPoints(posts: PostInfo[]): string[] {
   // 두 번째 포스팅의 평가 기준 추출
   if (posts.length > 1 && posts[1].reviews) {
     const secondPost = posts[1]
-    for (const review of secondPost.reviews) {
-      if (!evaluationCriteriaPoints.includes(review.category)) {
-        evaluationCriteriaPoints.push(`${review.category}: ${review.score}`)
+    if (secondPost.reviews) {
+      for (const review of secondPost.reviews) {
+        if (!evaluationCriteriaPoints.includes(review.category)) {
+          evaluationCriteriaPoints.push(`${review.category}: ${review.score}`)
+        }
       }
     }
   }

@@ -16,6 +16,7 @@ export interface PostInfo {
   thumbnail?: string
   metadata?: Record<string, any>
   cafeInfo?: CafeInfo
+  reviews?: ReviewInfo[]  // 평가 정보 추가
 }
 
 export interface ReviewInfo {
@@ -134,7 +135,13 @@ export async function scrapeNaverKnowledgeSearch(query: string, resultCount: num
  * @returns 카페 정보
  */
 export function extractCafeInfo(content: string): CafeInfo {
-  const cafeInfo: CafeInfo = {}
+  const cafeInfo: CafeInfo = {
+    cafeName: '알 수 없음',
+    cafeAddress: undefined,
+    cafePhone: undefined,
+    cafeHours: undefined,
+    cafeMenu: undefined,
+  }
 
   // 카페 이름 추출 (정규표현식 사용)
   const cafeNameMatch = content.match(/카페명[가:]?\s*([^\n,]+)/i)

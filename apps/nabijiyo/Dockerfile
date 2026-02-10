@@ -38,6 +38,8 @@ WORKDIR /app
 
 # 환경 변수 설정
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # .next/standalone 디렉토리 전체 복사
 COPY --from=builder /app/.next/standalone ./

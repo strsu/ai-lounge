@@ -31,6 +31,80 @@ export interface ScrapeResult {
   doDont?: DoDontResult;
 }
 
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('query')
+
+    if (!query || query.trim().length === 0) {
+      return NextResponse.json(
+        { error: '검색어를 입력해주세요' },
+        { status: 400 }
+      )
+    }
+
+    // 1. 네이버 블로그 스크래핑 (우선)
+    const blogPosts = await scrapeNaverBlogSearch(query, 10)
+
+    // 2. 네이버 지식인 스크래핑 (보조)
+    const knowledgePosts = await scrapeNaverKnowledgeSearch(query, 5)
+
+    // 3. 포스팅 정보 추출
+    const processedPosts: ScrapeResult[] = [];
+
+    // 블로그 포스팅 처리
+    for (const post of blogPosts) {
+      if (!post.content) continue
+
+      const cafeInfo = extractCafeInfo(post.content)
+      const reviews = extractReviews(post.content)
+      const doDont = analyzeDoDont(post.content);
+
+      processedPosts.push({
+        ...post,
+        cafeInfo,
+        reviews,
+        doDont,
+        metadata: {
+          ...post.metadata,
+          source: 'naver_blog',
+        },
+      })
+    }
+
+    // 지식인 답변 처리
+    for (const post of knowledgePosts) {
+      if (!post.content) continue
+
+      const cafeInfo = extractCafeInfo(post.content)
+      const reviews = extractReviews(post.content)
+      const doDont = analyzeDoDont(post.content);
+
+      processedPosts.push({
+        ...post,
+        cafeInfo,
+        reviews,
+        doDont,
+        metadata: {
+          ...post.metadata,
+          source: 'naver_knowledge',
+        },
+      })
+    }
+
+    return NextResponse.json({
+      cafes: processedPosts,
+      message: '검색 완료',
+    })
+  } catch (error) {
+    console.error('Search error:', error)
+    return NextResponse.json(
+      { error: '검색 중 오류가 발생했습니다' },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -215,7 +289,9 @@ async function scrapeNaverKnowledgeSearch(query: string, resultCount: number = 1
  * @returns 카페 정보
  */
 function extractCafeInfo(content: string): CafeInfo {
-  const cafeInfo: CafeInfo = {}
+  const cafeInfo: CafeInfo = {
+    cafeName: '알 수 없음'  // 기본값 설정
+  }
 
   // 카페 이름 추출 (정규표현식 사용)
   const cafeNameMatch = content.match(/카페명[가:]?\s*([^\n,]+)/i)
