@@ -11,10 +11,10 @@ export interface CafeInfo {
 
 export interface PostInfo {
   url: string
-  title?: string
-  content?: string
-  thumbnail?: string
-  metadata?: Record<string, any>
+  title?: string | null
+  content?: string | null
+  thumbnail?: string | null
+  metadata?: Record<string, any> | null
   cafeInfo?: CafeInfo
   reviews?: ReviewInfo[]  // 평가 정보 추가
 }
@@ -22,7 +22,7 @@ export interface PostInfo {
 export interface ReviewInfo {
   category: string
   score: number
-  description?: string
+  description?: string | null
 }
 
 /**

@@ -4,6 +4,7 @@ import { analyzePosts, AnalysisResult } from '@/lib/analyzer'
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 /**
  * 맛집 상세 정보 API
@@ -48,7 +49,15 @@ export async function GET(request: NextRequest) {
     if (!cafe.summary) {
       // 포스팅이 있으면 분석 수행
       if (cafe.posts.length > 0) {
-        analysisResult = analyzePosts(cafe.posts)
+        // Prisma 타입을 PostInfo 타입으로 변환
+        const postsForAnalysis = cafe.posts.map(post => ({
+          ...post,
+          content: post.content || undefined,
+          title: post.title || undefined,
+          thumbnail: post.thumbnail || undefined,
+          metadata: post.metadata as Record<string, any> | null,
+        }))
+        analysisResult = analyzePosts(postsForAnalysis)
 
         // Summary 생성
         await prisma.summary.create({
@@ -67,7 +76,7 @@ export async function GET(request: NextRequest) {
         doPoints: cafe.summary.doPoints as string[],
         dontPoints: cafe.summary.dontPoints as string[],
         warnings: cafe.summary.warnings as string[],
-        overallScore: cafe.summary.overallScore
+        overallScore: cafe.summary.overallScore || 0
       }
     }
 

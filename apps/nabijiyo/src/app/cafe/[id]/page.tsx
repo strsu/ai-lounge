@@ -1,42 +1,96 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import Link from 'next/link'
 
-export default function CafeDetailPage() {
-  const params = useParams()
-  const [cafe, setCafe] = useState<any>(null)
+interface Cafe {
+  id: string
+  name: string
+  address?: string
+  phone?: string
+  description?: string
+  hours?: string
+  menu?: any
+}
+
+interface Review {
+  id: string
+  category: string
+  score: number
+  description?: string
+}
+
+interface Post {
+  id: string
+  url: string
+  title?: string
+  content?: string
+  thumbnail?: string
+  metadata?: any
+  source: string
+  reviews: Review[]
+}
+
+interface DetailResponse {
+  cafe: Cafe
+  overallScore: number
+  averageScores: Record<string, number>
+  doPoints: string[]
+  dontPoints: string[]
+  warnings: string[]
+  posts: Post[]
+}
+
+export default function CafeDetailPage({ params }: { params: { id: string } }) {
+  const [data, setData] = useState<DetailResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetchCafeDetail()
+    fetchDetail()
   }, [params.id])
 
-  const fetchCafeDetail = async () => {
-    setLoading(true)
-    setError('')
-
+  const fetchDetail = async () => {
     try {
       const response = await fetch(`/api/detail?id=${params.id}`)
-      const data = await response.json()
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || '맛집 상세 정보를 불러오지 못했습니다')
+        throw new Error(result.error || '상세 정보를 불러오지 못했습니다')
       }
 
-      setCafe(data)
+      setData(result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : '오류가 발생했습니다')
+      setError(err instanceof Error ? err.message : '상세 정보를 불러오는 중 오류가 발생했습니다')
     } finally {
       setLoading(false)
     }
   }
 
+  const renderStars = (score: number) => {
+    const filledStars = Math.round(score)
+    return (
+      <div className="flex gap-1">
+        {[...Array(5)].map((_, i) => (
+          <span
+            key={i}
+            className={i < filledStars ? 'text-yellow-400' : 'text-gray-300'}
+          >
+            ★
+          </span>
+        ))}
+        <span className="ml-2 text-gray-600">{score.toFixed(1)}</span>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <p className="mt-4 text-gray-600">로딩 중...</p>
+        </div>
       </div>
     )
   }
@@ -44,228 +98,207 @@ export default function CafeDetailPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={fetchCafeDetail}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        <div className="max-w-md mx-auto px-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+          <Link
+            href="/search"
+            className="block mt-4 text-center text-blue-600 hover:underline"
           >
-            다시 시도
-          </button>
+            ← 검색으로 돌아가기
+          </Link>
         </div>
       </div>
     )
   }
 
-  if (!cafe) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">맛집을 찾을 수 없습니다.</p>
-      </div>
-    )
+  if (!data) {
+    return null
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* 뒤로가기 버튼 */}
-          <button
-            onClick={() => window.history.back()}
-            className="mb-6 text-blue-600 hover:text-blue-800 flex items-center gap-2"
-          >
-            <span>←</span> 뒤로 가기
-          </button>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* 뒤로가기 버튼 */}
+        <Link
+          href="/search"
+          className="inline-flex items-center gap-2 text-blue-600 hover:underline mb-6"
+        >
+          ← 검색으로 돌아가기
+        </Link>
 
-          {/* 맛집 헤더 */}
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              {cafe.cafe?.name}
-            </h1>
-            <div className="space-y-2 text-gray-600">
-              {cafe.cafe?.address && (
-                <p className="flex items-center gap-2">
-                  <span>📍</span>
-                  <span>{cafe.cafe.address}</span>
-                </p>
-              )}
-              {cafe.cafe?.phone && (
-                <p className="flex items-center gap-2">
-                  <span>📞</span>
-                  <span>{cafe.cafe.phone}</span>
-                </p>
-              )}
-              {cafe.cafe?.hours && (
-                <p className="flex items-center gap-2">
-                  <span>⏰</span>
-                  <span>{cafe.cafe.hours}</span>
-                </p>
-              )}
-              {cafe.cafe?.description && (
-                <p className="pt-4 text-gray-700">{cafe.cafe.description}</p>
-              )}
-            </div>
+        {/* 맛집 헤더 */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {data.cafe.name}
+          </h1>
 
-            {/* 종합 평점 */}
-            {cafe.overallScore > 0 && (
-              <div className="mt-6 pt-6 border-t">
-                <div className="flex items-center gap-4">
-                  <div className="text-4xl font-bold text-yellow-500">
-                    ⭐ {cafe.overallScore.toFixed(1)}
-                  </div>
-                  <div className="text-gray-600">종합 평점</div>
-                </div>
-              </div>
+          {/* 기본 정보 */}
+          <div className="space-y-3">
+            {data.cafe.address && (
+              <p className="text-gray-600 flex items-center gap-2">
+                <span className="text-lg">📍</span>
+                {data.cafe.address}
+              </p>
+            )}
+            {data.cafe.phone && (
+              <p className="text-gray-600 flex items-center gap-2">
+                <span className="text-lg">📞</span>
+                {data.cafe.phone}
+              </p>
+            )}
+            {data.cafe.hours && (
+              <p className="text-gray-600 flex items-center gap-2">
+                <span className="text-lg">⏰</span>
+                {data.cafe.hours}
+              </p>
             )}
           </div>
 
-          {/* 카테고리별 평점 */}
-          {cafe.averageScores && Object.keys(cafe.averageScores).length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                카테고리별 평점
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Object.entries(cafe.averageScores).map(([category, score]) => (
-                  <div key={category} className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-500 mb-1">
-                      {(score as number).toFixed(1)}
-                    </div>
-                    <div className="text-sm text-gray-600 capitalize">
-                      {getCategoryName(category)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* 종합 평점 */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">종합 평점</h3>
+            <div className="text-3xl font-bold text-blue-600 mb-3">
+              {data.overallScore.toFixed(1)}
             </div>
-          )}
 
-          {/* DO (공통점) */}
-          {cafe.doPoints && cafe.doPoints.length > 0 && (
-            <div className="bg-green-50 rounded-xl p-6 mb-6">
-              <h2 className="text-xl font-semibold text-green-800 mb-4">
-                ✅ DO (공통점)
-              </h2>
-              <ul className="space-y-2">
-                {cafe.doPoints.map((point: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-green-600 mt-1">•</span>
-                    <span className="text-green-800">{point}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* 카테고리별 평점 */}
+            <div className="space-y-2">
+              {Object.entries(data.averageScores).map(([category, score]) => (
+                <div key={category} className="flex justify-between items-center">
+                  <span className="text-gray-700 capitalize">
+                    {category === 'taste' && '맛'}
+                    {category === 'service' && '서비스'}
+                    {category === 'value' && '가성비'}
+                    {category === 'cleanliness' && '청결도'}
+                  </span>
+                  {renderStars(score)}
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        </div>
 
-          {/* DONT (차이점) */}
-          {cafe.dontPoints && cafe.dontPoints.length > 0 && (
-            <div className="bg-red-50 rounded-xl p-6 mb-6">
-              <h2 className="text-xl font-semibold text-red-800 mb-4">
-                ❌ DONT (차이점)
-              </h2>
-              <ul className="space-y-2">
-                {cafe.dontPoints.map((point: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-red-600 mt-1">•</span>
-                    <span className="text-red-800">{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+        {/* DO (공통점) 섹션 */}
+        {data.doPoints.length > 0 && (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-2xl font-bold text-green-600 mb-4">
+              ✅ DO (공통점)
+            </h2>
+            <ul className="space-y-2">
+              {data.doPoints.map((point, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-green-500 mt-1">•</span>
+                  <span className="text-gray-700">{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-          {/* 주의사항 */}
-          {cafe.warnings && cafe.warnings.length > 0 && (
-            <div className="bg-yellow-50 rounded-xl p-6 mb-6">
-              <h2 className="text-xl font-semibold text-yellow-800 mb-4">
-                ⚠️ 주의사항
-              </h2>
-              <ul className="space-y-2">
-                {cafe.warnings.map((warning: string, idx: number) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-yellow-600 mt-1">•</span>
-                    <span className="text-yellow-800">{warning}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+        {/* DONT (차이점) 섹션 */}
+        {data.dontPoints.length > 0 && (
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">
+              ⚠️ DONT (차이점)
+            </h2>
+            <ul className="space-y-2">
+              {data.dontPoints.map((point, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-red-500 mt-1">•</span>
+                  <span className="text-gray-700">{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-          {/* 참조 포스팅 */}
-          {cafe.posts && cafe.posts.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                📝 참조 포스팅 ({cafe.posts.length}개)
-              </h2>
-              <div className="space-y-4">
-                {cafe.posts.map((post: any, idx: number) => (
-                  <div
-                    key={post.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                        {getSourceName(post.source)}
-                      </span>
-                    </div>
-                    {post.title && (
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        {post.title}
+        {/* 주의사항 */}
+        {data.warnings.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-yellow-700 mb-3">
+              📌 주의사항
+            </h2>
+            <ul className="space-y-2">
+              {data.warnings.map((warning, index) => (
+                <li key={index} className="flex items-start gap-2 text-yellow-800">
+                  <span className="text-yellow-600 mt-1">•</span>
+                  <span>{warning}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 참조 포스팅 목록 */}
+        {data.posts.length > 0 && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              📝 참조 포스팅 ({data.posts.length}건)
+            </h2>
+            <div className="space-y-4">
+              {data.posts.map((post) => (
+                <div key={post.id} className="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
+                  <div className="flex items-start gap-4">
+                    {post.thumbnail && (
+                      <img
+                        src={post.thumbnail}
+                        alt={post.title}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {post.title || '제목 없음'}
                       </h3>
-                    )}
-                    {post.content && (
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-                        {post.content}
+                      <p className="text-sm text-gray-500 mb-2">
+                        {post.source === 'naver_blog' && '네이버 블로그'}
+                        {post.source === 'naver_knowledge' && '네이버 지식인'}
                       </p>
-                    )}
-                    {post.reviews && post.reviews.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {post.reviews.map((review: any, rIdx: number) => (
-                          <span
-                            key={rIdx}
-                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
-                          >
-                            {review.category}: {review.score}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {post.url && (
+                      {post.content && (
+                        <p className="text-gray-600 text-sm line-clamp-2">
+                          {post.content}
+                        </p>
+                      )}
                       <a
                         href={post.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block mt-3 text-blue-600 hover:text-blue-800 text-sm"
+                        className="inline-block mt-2 text-sm text-blue-600 hover:underline"
                       >
                         원문 보기 →
                       </a>
-                    )}
+                    </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* 포스팅별 평가 */}
+                  {post.reviews.length > 0 && (
+                    <div className="mt-3 flex gap-4 flex-wrap">
+                      {post.reviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className="text-sm px-3 py-1 bg-gray-100 rounded-full"
+                        >
+                          <span className="text-gray-600">
+                            {review.category === 'taste' && '맛'}
+                            {review.category === 'service' && '서비스'}
+                            {review.category === 'value' && '가성비'}
+                            {review.category === 'cleanliness' && '청결도'}
+                          </span>
+                          <span className="ml-1 font-semibold">
+                            {review.score}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
-}
-
-function getCategoryName(category: string): string {
-  const names: Record<string, string> = {
-    taste: '맛',
-    service: '서비스',
-    value: '가성비',
-    cleanliness: '청결도',
-  }
-  return names[category] || category
-}
-
-function getSourceName(source: string): string {
-  const names: Record<string, string> = {
-    naver_blog: '네이버 블로그',
-    naver_knowledge: '네이버 지식인',
-    instagram: '인스타그램',
-  }
-  return names[source] || source
 }

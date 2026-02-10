@@ -7,6 +7,10 @@ const nextConfig = {
     domains: ['blogfiles.pstatic.net', 'k.kakaocdn.net'],
   },
   output: 'standalone',
+  // API 라우트 제외 설정
+  api: {
+    externalRoutes: ['/api/search', '/api/detail', '/api/scrape'],
+  },
   webpack: (config, { isServer }) => {
     config.resolve.fallback = { fs: false, net: false, tls: false }
 
