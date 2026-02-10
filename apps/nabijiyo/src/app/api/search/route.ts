@@ -3,6 +3,14 @@ import { NextRequest, NextResponse } from 'next/server'
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
 
+import {
+  scrapeNaverBlogSearch,
+  scrapeNaverKnowledgeSearch,
+  extractCafeInfo,
+  extractReviews,
+} from '@/lib/scraper'
+import { analyzePosts } from '@/lib/analyzer'
+
 interface ScrapeResult {
   cafeName: string
   cafeAddress?: string
@@ -33,26 +41,64 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 임시 스크래핑 결과 반환 (Prisma 제거)
-    const mockResults: ScrapeResult[] = [
-      {
-        url: 'https://example.com/blog/1',
-        title: `테스트 블로그: ${query}`,
-        metadata: {
-          thumbnail: '',
-          summary: '테스트용 더미 데이터입니다',
-        },
-        cafeName: '테스트 맛집',
-        cafeAddress: '서울시 테스트구',
-        cafePhone: '02-1234-5678',
-        cafeHours: '09:00 - 22:00',
-        cafeMenu: { main: '테스트 메뉴' },
-      }
-    ]
+    // 1. 네이버 블로그 스크래핑 (우선)
+    const blogPosts = await scrapeNaverBlogSearch(query, 10)
 
+    // 2. 네이버 지식인 스크래핑 (보조)
+    const knowledgePosts = await scrapeNaverKnowledgeSearch(query, 5)
+
+    // 3. 포스팅 정보 추출
+    const processedPosts: ScrapeResult[] = []
+
+    // 블로그 포스팅 처리
+    for (const post of blogPosts) {
+      if (!post.content) continue
+
+      const cafeInfo = extractCafeInfo(post.content)
+      const reviews = extractReviews(post.content)
+
+      processedPosts.push({
+        ...post,
+        cafeInfo,
+        reviews,
+        metadata: {
+          ...post.metadata,
+          source: 'naver_blog',
+        },
+      })
+    }
+
+    // 지식인 답변 처리
+    for (const post of knowledgePosts) {
+      if (!post.content) continue
+
+      const cafeInfo = extractCafeInfo(post.content)
+      const reviews = extractReviews(post.content)
+
+      processedPosts.push({
+        ...post,
+        cafeInfo,
+        reviews,
+        metadata: {
+          ...post.metadata,
+          source: 'naver_knowledge',
+        },
+      })
+    }
+
+    // 4. DO/DONT 분석
+    const { doPoints, dontPoints, warnings, overallScore } = analyzePosts(processedPosts)
+
+    // 5. 응답 생성
     return NextResponse.json({
-      cafes: mockResults,
-      message: '검색 완료 (Prisma 없음)',
+      cafes: processedPosts,
+      analysis: {
+        doPoints,
+        dontPoints,
+        warnings,
+        overallScore,
+      },
+      message: '검색 완료',
     })
   } catch (error) {
     console.error('Search error:', error)
