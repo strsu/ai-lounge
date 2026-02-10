@@ -112,7 +112,12 @@ class HelloHandler(BaseHTTPRequestHandler):
         self.request_id = str(uuid.uuid4())[:8]
 
         try:
-            if self.path == '/health':
+            if self.path == '/api/health':
+                # API 헬스 체크 엔드포인트
+                self.send_json_response(200, self.get_health_status())
+                self.update_metrics(success=True)
+
+            elif self.path == '/health':
                 # 헬스 체크 엔드포인트
                 self.send_json_response(200, self.get_health_status())
                 self.update_metrics(success=True)
