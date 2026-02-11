@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>술 먹는 날 체크 🍺</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .calendar-header button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .month-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            color: #667eea;
+        }
+
+        .day {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .day:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .day.today {
+            background: #ffeb3b;
+            font-weight: bold;
+        }
+
+        .day.drank {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .day.drank:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .day-number {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .day-emoji {
+            font-size: 1.5em;
+            margin-top: 5px;
+        }
+
+        .day-people {
+            font-size: 0.7em;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        .day-food {
+            font-size: 0.65em;
+            margin-top: 3px;
+            color: #f0f0f0;
+            font-style: italic;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .stats h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+
+        .legend-color.drank {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .legend-color.today {
+            background: #ffeb3b;
+        }
+
+        .empty-day {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍺 술 먹는 날 체크</h1>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color drank"></div>
+                <span>술 마신 날</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color today"></div>
+                <span>오늘</span>
+            </div>
+        </div>
+
+        <div class="calendar-header">
+            <button id="prevMonth">◀ 이전</button>
+            <div class="month-title" id="monthTitle">2026년 2월</div>
+            <button id="nextMonth">다음 ▶</button>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let data = { records: [] };
+
+        // 데이터 로드
+        function loadData() {
+            fetch('data.json')
+                .then(response => response.json())
+                .then(json => {
+                    data = json;
+                    renderCalendar();
+                    renderStats();
+                })
+                .catch(error => {
+                    console.error('데이터 로드 실패:', error);
+                    renderCalendar();
+                    renderStats();
+                });
+        }
+
+        // 달력 렌더링
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            const monthTitle = document.getElementById('monthTitle');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            monthTitle.textContent = `${year}년 ${month + 1}월`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // 요일 헤더
+            const dayHeaders = ['일', '월', '화', '수', '목', '금', '토'];
+            calendar.innerHTML = dayHeaders.map(d => `<div class="day-header">${d}</div>`).join('');
+
+            // 빈 날짜
+            for (let i = 0; i < firstDay; i++) {
+                calendar.innerHTML += '<div class="day empty-day"></div>';
+            }
+
+            // 날짜
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const record = data.records.find(r => r.date === dateStr);
+                const isToday = new Date(year, month, day).getTime() === today.getTime();
+                const isDrank = record && record.people && record.people.length > 0;
+
+                let emoji = '';
+                let people = '';
+                let food = '';
+                if (isDrank) {
+                    emoji = '🍺';
+                    people = record.people.join(', ');
+                    if (record.food) {
+                        food = record.food;
+                    }
+                }
+
+                const dayClass = `day ${isToday ? 'today' : ''} ${isDrank ? 'drank' : ''}`;
+
+                calendar.innerHTML += `
+                    <div class="${dayClass}" title="${people}${food ? ' (' + food + ')' : ''}">
+                        <div class="day-number">${day}</div>
+                        ${emoji ? `<div class="day-emoji">${emoji}</div>` : ''}
+                        ${people ? `<div class="day-people">${people}</div>` : ''}
+                        ${food ? `<div class="day-food">🍽️ ${food}</div>` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        // 통계 렌더링
+        function renderStats() {
+            const stats = document.getElementById('stats');
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            const monthRecords = data.records.filter(r => {
+                const recordDate = new Date(r.date);
+                return recordDate.getFullYear() === year && recordDate.getMonth() === month;
+            });
+
+            const drankDays = monthRecords.filter(r => r.people && r.people.length > 0).length;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const drinkingRate = daysInMonth > 0 ? ((drankDays / daysInMonth) * 100).toFixed(1) : 0;
+
+            // 전체 통계
+            const allDrankDays = data.records.filter(r => r.people && r.people.length > 0).length;
+
+            // 사람별 통계
+            const peopleCount = {};
+            data.records.forEach(r => {
+                if (r.people) {
+                    r.people.forEach(person => {
+                        peopleCount[person] = (peopleCount[person] || 0) + 1;
+                    });
+                }
+            });
+
+            const peopleStats = Object.entries(peopleCount)
+                .sort((a, b) => b[1] - a[1])
+                .map(([person, count]) => `
+                    <div class="stat-item">
+                        <span class="stat-label">${person}</span>
+                        <span class="stat-value">${count}회</span>
+                    </div>
+                `).join('');
+
+            stats.innerHTML = `
+                <h2>📊 ${year}년 ${month + 1}월 통계</h2>
+                <div class="stat-item">
+                    <span class="stat-label">술 마신 날</span>
+                    <span class="stat-value">${drankDays}일</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">음주 비율</span>
+                    <span class="stat-value">${drinkingRate}%</span>
+                </div>
+                <h2 style="margin-top: 20px;">🎯 전체 누적</h2>
+                <div class="stat-item">
+                    <span class="stat-label">총 음주일</span>
+                    <span class="stat-value">${allDrankDays}일</span>
+                </div>
+                ${peopleStats ? '<h2 style="margin-top: 20px;">👥 누구랑 가장 많이 마셨나</h2>' + peopleStats : ''}
+            `;
+
+            // 음식별 통계
+            const foodCount = {};
+            data.records.forEach(r => {
+                if (r.food) {
+                    foodCount[r.food] = (foodCount[r.food] || 0) + 1;
+                }
+            });
+
+            const foodStats = Object.entries(foodCount)
+                .sort((a, b) => b[1] - a[1])
+                .map(([food, count]) => `
+                    <div class="stat-item">
+                        <span class="stat-label">${food}</span>
+                        <span class="stat-value">${count}회</span>
+                    </div>
+                `).join('');
+
+            if (foodStats) {
+                stats.innerHTML += `
+                    <h2 style="margin-top: 20px;">🍽️ 가장 많이 먹은 음식</h2>
+                    ${foodStats}
+                `;
+            }
+        }
+
+        // 이전 달
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+            renderStats();
+        });
+
+        // 다음 달
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+            renderStats();
+        });
+
+        // 초기 로드
+        loadData();
+    </script>
+</body>
+</html>

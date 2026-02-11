@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>필리핀 빙고 게임 - 사용자 피드백 🇵🇭</title>
+    <style>
+        body {
+            font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .feedback-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: #ffc107;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .feedback-list {
+            margin-top: 30px;
+        }
+
+        .feedback-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .feedback-rating {
+            color: #ffc107;
+            font-size: 20px;
+        }
+
+        .feedback-date {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .feedback-category {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .feedback-message {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .suggestions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .suggestions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .suggestion-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇵🇭 필리핀 빙고 게임</h1>
+            <p>사용자 피드백 및 개선 제안</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ 감사합니다! 피드백이 성공적으로 제출되었습니다.
+        </div>
+
+        <div class="feedback-form">
+            <h2>📝 게임에 대한 의견을 알려주세요!</h2>
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="userName">닉네임 (선택 사항)</label>
+                    <input type="text" id="userName" name="userName" placeholder="예: 필리핀 문화爱好者">
+                </div>
+
+                <div class="form-group">
+                    <label for="gameCategory">가장 마음에 드는 카테고리는 무엇인가요?</label>
+                    <select id="gameCategory" name="gameCategory">
+                        <option value="">선택해 주세요</option>
+                        <option value="음식">음식</option>
+                        <option value="축제">축제</option>
+                        <option value="관광지">관광지</option>
+                        <option value="전통 의상">전통 의상</option>
+                        <option value="전통 악기">전통 악기</option>
+                        <option value="언어">언어</option>
+                        <option value="게임 플레이">게임 플레이</option>
+                        <option value="시각 디자인">시각 디자인</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>게임 만족도</label>
+                    <div class="rating-group" id="ratingGroup">
+                        <span class="star" data-rating="1">⭐</span>
+                        <span class="star" data-rating="2">⭐</span>
+                        <span class="star" data-rating="3">⭐</span>
+                        <span class="star" data-rating="4">⭐</span>
+                        <span class="star" data-rating="5">⭐</span>
+                        <span id="ratingText" style="margin-left: 15px;">별점을 선택해 주세요</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>개선하고 싶은 부분 (중복 선택 가능)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="moreElements" name="improvements" value="더 많은 문화 요소">
+                            <label for="moreElements">더 많은 문화 요소 추가</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="soundEffects" name="improvements" value="효과음">
+                            <label for="soundEffects">효과음 추가</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="mobileApp" name="improvements" value="모바일 앱">
+                            <label for="mobileApp">모바일 앱 개발</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="multiplayer" name="improvements" value="멀티플레이어">
+                            <label for="multiplayer">멀티플레이어 기능</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="difficulty" name="improvements" value="난이도 조절">
+                            <label for="difficulty">난이도 조절 기능</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tutorial" name="improvements" value="튜토리얼">
+                            <label for="tutorial">더 상세한 튜토리얼</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="suggestions">추가하고 싶은 문화 요소 또는 제안사항</label>
+                    <textarea id="suggestions" name="suggestions" placeholder="예: 필리핀의 유명한 축제를 더 추가해 주세요!&#10;또는 게임에 대한 다른 아이디어를 알려주세요..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">피드백 제출하기 🎉</button>
+            </form>
+        </div>
+
+        <div class="suggestions">
+            <h3>💡 개선 아이디어 (개발 중)</h3>
+            <div class="suggestion-item">
+                <strong>🎵 효과음 추가</strong>
+                <p>필리핀 전통 악기 소리를 게임 효과음으로 추가하여 더욱 현감 있는 경험 제공</p>
+            </div>
+            <div class="suggestion-item">
+                <strong>📱 모바일 최적화</strong>
+                <p>스마트폰에서도 쉽게 플레이할 수 있도록 반응형 디자인 개선 중</p>
+            </div>
+            <div class="suggestion-item">
+                <strong>🌏 다른 국가 문화 게임</strong>
+                <p>필리핀 뿐만 아니라 다른 국가의 문화를 배울 수 있는 시리즈 게임 개발 계획</p>
+            </div>
+            <div class="suggestion-item">
+                <strong>🏆 업적 시스템</strong>
+                <p>특정 조건 달성 시 업적을 주는 시스템 추가로 게임의 재미 증대</p>
+            </div>
+        </div>
+
+        <div class="feedback-list">
+            <h3>📋 최근 피드백</h3>
+            <div id="recentFeedbacks">
+                <div class="feedback-item">
+                    <div class="feedback-header">
+                        <div>
+                            <span class="feedback-category">음식</span>
+                            <div class="feedback-rating">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <div class="feedback-date">2024-01-15</div>
+                    </div>
+                    <p class="feedback-message">
+                        "레칸도와 아도보를 알게 되어 정말 좋았습니다! 필리핀 음식에 대한 지식이 늘었어요. 다른 나라 음식도 추가되면 좋겠습니다."
+                    </p>
+                </div>
+                
+                <div class="feedback-item">
+                    <div class="feedback-header">
+                        <div>
+                            <span class="feedback-category">게임 플레이</span>
+                            <div class="feedback-rating">⭐⭐⭐⭐</div>
+                        </div>
+                        <div class="feedback-date">2024-01-14</div>
+                    </div>
+                    <p class="feedback-message">
+                        "자동 호출 기능이 정말 편리해요. 다만 빙고 카드의 요소가 너무 작아서 눈이 아픕니다. 폰트를 좀 더 키워주세요."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 별점 시스템
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+        const ratingText = document.getElementById('ratingText');
+        let currentRating = 0;
+
+        const ratingTexts = {
+            1: '별로에요 😞',
+            2: '그래요 😐',
+            3: '괜찮아요 🙂',
+            4: '좋아요 😊',
+            5: '아주 좋아요! 🎉'
+        };
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                currentRating = index + 1;
+                ratingInput.value = currentRating;
+                updateStars();
+                ratingText.textContent = ratingTexts[currentRating];
+            });
+
+            star.addEventListener('mouseover', () => {
+                highlightStars(index + 1);
+            });
+        });
+
+        document.getElementById('ratingGroup').addEventListener('mouseleave', () => {
+            updateStars();
+        });
+
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function highlightStars(rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // 피드백 제출
+        document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const feedback = {
+                userName: formData.get('userName') || '익명',
+                gameCategory: formData.get('gameCategory'),
+                rating: formData.get('rating'),
+                improvements: formData.getAll('improvements'),
+                suggestions: formData.get('suggestions'),
+                timestamp: new Date().toISOString()
+            };
+
+            // 유효성 검사
+            if (!feedback.rating) {
+                alert('별점을 선택해주세요!');
+                return;
+            }
+
+            if (!feedback.gameCategory) {
+                alert('가장 마음에 드는 카테고리를 선택해주세요!');
+                return;
+            }
+
+            // 로컬 스토리지에 저장 (실제 서비스에서는 서버로 전송)
+            saveFeedback(feedback);
+            
+            // 성공 메시지 표시
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // 폼 초기화
+            e.target.reset();
+            currentRating = 0;
+            updateStars();
+            ratingText.textContent = '별점을 선택해 주세요';
+            
+            // 최근 피드백 업데이트
+            updateRecentFeedbacks();
+            
+            // 3초 후 성공 메시지 숨기기
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 3000);
+        });
+
+        function saveFeedback(feedback) {
+            const feedbacks = JSON.parse(localStorage.getItem('philippinesBingoFeedbacks') || '[]');
+            feedbacks.unshift(feedback);
+            
+            // 최대 10개만 저장
+            if (feedbacks.length > 10) {
+                feedbacks.pop();
+            }
+            
+            localStorage.setItem('philippinesBingoFeedbacks', JSON.stringify(feedbacks));
+        }
+
+        function updateRecentFeedbacks() {
+            const feedbacks = JSON.parse(localStorage.getItem('philippinesBingoFeedbacks') || '[]');
+            const container = document.getElementById('recentFeedbacks');
+            
+            if (feedbacks.length === 0) {
+                container.innerHTML = '<p>아직 피드백이 없습니다. 첫 번째 피드백을 남겨주세요!</p>';
+                return;
+            }
+            
+            container.innerHTML = feedbacks.slice(0, 3).map(feedback => {
+                const date = new Date(feedback.timestamp).toLocaleDateString('ko-KR');
+                const stars = '⭐'.repeat(parseInt(feedback.rating));
+                
+                return `
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <div>
+                                <span class="feedback-category">${feedback.gameCategory}</span>
+                                <div class="feedback-rating">${stars}</div>
+                            </div>
+                            <div class="feedback-date">${date}</div>
+                        </div>
+                        <p class="feedback-message">${feedback.suggestions}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 페이지 로드 시 최근 피드백 불러오기
+        updateRecentFeedbacks();
+    </script>
+</body>
+</html>

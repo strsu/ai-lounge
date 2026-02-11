@@ -126,3 +126,39 @@
 *   관리자 대시보드 추가
 *   데이터 시각화 (Chart.js)
 *   사용자 피드백 수집
+
+---
+
+## 2026-02-10
+
+### 개요
+*   인프라 업데이트 및 협업 도구 활성화
+
+### 작업 내용 요약
+
+1. **Docker Registry 복구:**
+   - `registry.prup.xyz` 이미지 서버 복구 완료
+   - 다시 이미지 푸시 가능
+   - 기존 이미지 재배포 필요 시 팀원에게 알릴 것
+
+2. **kubectl 사용법 기록:**
+   - README-DEV.md에 상세한 kubectl 사용법이 있음
+   - TOOLS.md에 빠른 참조 가이드 추가
+   - **팀장 역할:** 팀원이 kubectl을 모르면 알려줘야 함
+   - **주요 명령어:**
+     - Pod 상태: `kubectl get pods -n ai-lounge`
+     - 로그 확인: `kubectl logs -f deployment/<service-name> -n ai-lounge`
+     - 서비스 확인: `kubectl get svc -n ai-lounge`
+
+3. **agentToagent 활성화:**
+   - agentToagent 기능 활성화됨
+   - sub agent 간 통신 지원
+
+### 참고 자료
+- kubectl 상세 사용법: `/home/jj/.openclaw/workspace/github/ai-lounge/README-DEV.md`
+- Docker 레지스트리: `registry.prup.xyz` (복구 완료)
+
+### 중요 사항
+- 팀장으로서 kubectl 사용법을 기억하고, 팀원에게 가이드할 수 있어야 함
+- registry.prup.xyz 복구로 이미지 빌드 및 푸시 가능
+- agentToagent 활성화로 sub agent 간 협업 강화

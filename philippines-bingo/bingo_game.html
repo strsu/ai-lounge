@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>필리핀 문화 빙고 게임 🇵🇭</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-area {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .bingo-card {
+            flex: 2;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 3px;
+            background: #dee2e6;
+            padding: 3px;
+            border-radius: 10px;
+        }
+
+        .card-cell {
+            aspect-ratio: 1;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .card-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-cell.marked {
+            background: #28a745 !important;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .card-cell.free {
+            background: #ffc107;
+            color: #212529;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .category {
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .element {
+            font-size: 11px;
+        }
+
+        /* 카테고리별 색상 */
+        .category-food { background-color: #FFE4B5; }
+        .category-festival { background-color: #FFB6C1; }
+        .category-tourism { background-color: #87CEEB; }
+        .category-clothing { background-color: #DDA0DD; }
+        .category-music { background-color: #98FB98; }
+        .category-language { background-color: #F0E68C; }
+
+        .called-section {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .called-section h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .called-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .called-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: #e9ecef;
+            margin: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: #f8f9fa;
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .auto-call-status {
+            padding: 10px;
+            margin: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .auto-call-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .auto-call-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇵🇭 필리핀 문화 빙고 게임 🎉</h1>
+            <p>필리핀의 풍부한 문화를 배우며 즐기는 빙고 게임</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="newGameBtn" onclick="newGame()">새 게임 시작</button>
+            <button class="btn btn-success" id="callBingoBtn" onclick="callBingo()" disabled>빙고! 🎊</button>
+            <button class="btn btn-warning" id="autoCallBtn" onclick="toggleAutoCall()" disabled>자동 호출 시작</button>
+        </div>
+
+        <div id="autoCallStatus" class="auto-call-status auto-call-inactive">
+            자동 호출: 비활성화됨
+        </div>
+
+        <div class="status" id="gameStatus">새 게임을 시작하십시오</div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="markedCells">0</div>
+                <div class="stat-label">마킹된 셀</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="bingoCount">0</div>
+                <div class="stat-label">빙고 수</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="gameProgress">0%</div>
+                <div class="stat-label">게임 진행률</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="bingo-card">
+                <div class="card-grid" id="bingoCard"></div>
+            </div>
+            <div class="called-section">
+                <h3>호출된 필리핀 문화 요소</h3>
+                <div class="called-list" id="calledList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 필리핀 문화 요소 데이터
+        const filipinoElements = {
+            '음식': [
+                '레칸도', '아도보', '시니간', '팔라브', '탄시아',
+                '할로-할로', '레체 플란', '바나나 케치업', '디불-디불', '피시볼'
+            ],
+            '축제': [
+                '사핀야한', '아티-아티', '피스티바', '마긴라야', '카니발',
+                '파할로그', '신코 페스티벌', '피노이 빙고', '디바하웃', '할라와'
+            ],
+            '관광지': [
+                '바라카이', '보라카이', '팔라완', '세부', '보홀',
+                '마닐라 만', '타지마하카르', '바나우어 섬', '토네이도 알리', '산토 도밍고'
+            ],
+            '전통 의상': [
+                '바라오트 사야', '타밀로크', '주스티', '바르오트', '살루오타',
+                '마끄살라', '파닐리', '몬토소', '테를레사', '삼빗'
+            ],
+            '전통 악기': [
+                '쿤투닝', '아기-아간', '빠누이', '탐보라', '잘링잘링',
+                '부부이', '달링가링', '클라링', '감판', '아피시'
+            ],
+            '언어': [
+                '사보쌍', '카라맛사', '마할로', '삐끄', '마무봇',
+                '사라핑', '나나마스테', '텝코스', '욜로', '디네'
+            ]
+        };
+
+        // 게임 상태
+        let gameState = {
+            card: [],
+            marked: [],
+            bingoCount: 0,
+            gameActive: false,
+            calledElements: [],
+            autoCallActive: false
+        };
+
+        // 카테고리 색상
+        const categoryColors = {
+            '음식': 'category-food',
+            '축제': 'category-festival',
+            '관광지': 'category-tourism',
+            '전통 의상': 'category-clothing',
+            '전통 악기': 'category-music',
+            '언어': 'category-language'
+        };
+
+        // 새 게임 시작
+        function newGame() {
+            gameState.gameActive = true;
+            gameState.bingoCount = 0;
+            gameState.calledElements = [];
+            gameState.marked = Array(5).fill().map(() => Array(5).fill(false));
+            
+            generateNewCard();
+            updateDisplay();
+            
+            document.getElementById('newGameBtn').disabled = true;
+            document.getElementById('callBingoBtn').disabled = false;
+            document.getElementById('autoCallBtn').disabled = false;
+            document.getElementById('gameStatus').textContent = '게임 진행 중... 필리핀 문화 요소를 찾으십시오!';
+            
+            document.getElementById('calledList').innerHTML = '';
+        }
+
+        // 새로운 빙고 카드 생성
+        function generateNewCard() {
+            gameState.card = Array(5).fill().map(() => Array(5).fill(''));
+            
+            // 모든 요소를 하나의 리스트로 합치고 섞기
+            const allElements = [];
+            Object.entries(filipinoElements).forEach(([category, elements]) => {
+                elements.forEach(element => {
+                    allElements.push({category, element});
+                });
+            });
+            
+            // 중복 제거 후 섞기
+            const uniqueElements = [...new Map(allElements.map(item => [item.element, item])).values()];
+            shuffleArray(uniqueElements);
+            
+            // 카드 채우기
+            let elementIndex = 0;
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    if (i === 2 && j === 2) {
+                        // 중심은 FREE
+                        gameState.card[i][j] = {category: 'FREE', element: 'FREE 🎉'};
+                    } else if (elementIndex < uniqueElements.length) {
+                        gameState.card[i][j] = uniqueElements[elementIndex];
+                        elementIndex++;
+                    }
+                }
+            }
+        }
+
+        // 배열 섞기
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // 카디 디스플레이 업데이트
+        function updateDisplay() {
+            const cardGrid = document.getElementById('bingoCard');
+            cardGrid.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'card-cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    const cellData = gameState.card[i][j];
+                    
+                    if (cellData.category === 'FREE') {
+                        cell.className += ' free';
+                        cell.innerHTML = `<div class="element">FREE 🎉</div>`;
+                    } else {
+                        if (gameState.marked[i][j]) {
+                            cell.className += ' marked';
+                        } else {
+                            cell.className += ` ${categoryColors[cellData.category]}`;
+                        }
+                        cell.innerHTML = `
+                            <div class="category">${cellData.category}</div>
+                            <div class="element">${cellData.element}</div>
+                        `;
+                        
+                        cell.onclick = () => markCell(i, j);
+                    }
+                    
+                    cardGrid.appendChild(cell);
+                }
+            }
+            
+            updateStats();
+            checkBingo();
+        }
+
+        // 셀 마킹
+        function markCell(row, col) {
+            if (!gameState.gameActive || (row === 2 && col === 2)) return;
+            
+            gameState.marked[row][col] = !gameState.marked[row][col];
+            updateDisplay();
+        }
+
+        // 자동 호출 토글
+        function toggleAutoCall() {
+            gameState.autoCallActive = !gameState.autoCallActive;
+            
+            const autoCallBtn = document.getElementById('autoCallBtn');
+            const autoCallStatus = document.getElementById('autoCallStatus');
+            
+            if (gameState.autoCallActive) {
+                autoCallBtn.textContent = '자동 호출 중지';
+                autoCallStatus.className = 'auto-call-status auto-call-active';
+                autoCallStatus.textContent = '자동 호출 활성화됨...';
+                autoCallElement();
+            } else {
+                autoCallBtn.textContent = '자동 호출 시작';
+                autoCallStatus.className = 'auto-call-status auto-call-inactive';
+                autoCallStatus.textContent = '자동 호출 비활성화됨';
+            }
+        }
+
+        // 자동 호출 요소
+        function autoCallElement() {
+            if (!gameState.autoCallActive || !gameState.gameActive) return;
+            
+            const categories = Object.keys(filipinoElements);
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const elements = filipinoElements[randomCategory];
+            const randomElement = elements[Math.floor(Math.random() * elements.length)];
+            
+            // 이미 호출된 것인지 확인
+            const alreadyCalled = gameState.calledElements.some(item => 
+                item.category === randomCategory && item.element === randomElement
+            );
+            
+            if (!alreadyCalled) {
+                gameState.calledElements.push({category: randomCategory, element: randomElement});
+                updateCalledList();
+                
+                // 자동 마킹
+                for (let i = 0; i < 5; i++) {
+                    for (let j = 0; j < 5; j++) {
+                        if (gameState.card[i][j].element === randomElement) {
+                            gameState.marked[i][j] = true;
+                            break;
+                        }
+                    }
+                }
+                
+                updateDisplay();
+            }
+            
+            // 3초 후 다음 호출
+            setTimeout(autoCallElement, 3000);
+        }
+
+        // 호출된 리스트 업데이트
+        function updateCalledList() {
+            const calledList = document.getElementById('calledList');
+            calledList.innerHTML = '';
+            
+            gameState.calledElements.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'called-item';
+                div.textContent = `${item.category}: ${item.element}`;
+                calledList.appendChild(div);
+            });
+            
+            // 스크롤을 맨 아래로
+            calledList.scrollTop = calledList.scrollHeight;
+        }
+
+        // 빙고 확인
+        function checkBingo() {
+            gameState.bingoCount = 0;
+            
+            // 가로 빙고 확인
+            for (let i = 0; i < 5; i++) {
+                if (checkRow(i)) {
+                    gameState.bingoCount++;
+                }
+            }
+            
+            // 세로 빙고 확인
+            for (let j = 0; j < 5; j++) {
+                if (checkColumn(j)) {
+                    gameState.bingoCount++;
+                }
+            }
+            
+            // 대각선 빙고 확인
+            if (checkDiagonal(true)) gameState.bingoCount++;
+            if (checkDiagonal(false)) gameState.bingoCount++;
+        }
+
+        // 행 빙고 확인
+        function checkRow(row) {
+            for (let j = 0; j < 5; j++) {
+                if (!gameState.marked[row][j] && !(row === 2 && j === 2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 열 빙고 확인
+        function checkColumn(col) {
+            for (let i = 0; i < 5; i++) {
+                if (!gameState.marked[i][col] && !(i === 2 && col === 2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 대각선 빙고 확인
+        function checkDiagonal(main) {
+            for (let i = 0; i < 5; i++) {
+                const j = main ? i : 4 - i;
+                if (!gameState.marked[i][j] && !(i === 2 && j === 2)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const totalCells = 24; // FREE 셀 제외
+            const markedCells = gameState.marked.flat().filter(Boolean).length;
+            const percentage = (markedCells / totalCells * 100).toFixed(1);
+            
+            document.getElementById('markedCells').textContent = `${markedCells}/24`;
+            document.getElementById('bingoCount').textContent = gameState.bingoCount;
+            document.getElementById('gameProgress').textContent = `${percentage}%`;
+        }
+
+        // 빙고 호출
+        function callBingo() {
+            if (gameState.bingoCount >= 1) {
+                alert(`축하합니다! 빙고를 완성했습니다! 🎉\n빙고 개수: ${gameState.bingoCount}`);
+            } else {
+                alert('아직 빙고 조건을 충족하지 못했습니다. 계속 진행하십시오!');
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            updateDisplay();
+        };
+    </script>
+</body>
+</html>
