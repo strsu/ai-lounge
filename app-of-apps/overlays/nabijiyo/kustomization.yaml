@@ -8,4 +8,4 @@ resources:
 images:
   - name: nabijiyo
     newName: registry.prup.xyz/ai-lounge/nabijiyo
-    newTag: latest
+    newTag: v202602120100
