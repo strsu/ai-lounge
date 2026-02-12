@@ -283,18 +283,10 @@
 
 | 서비스 이름 | Subdomain | Kubernetes Service 포트 | 컨테이너 포트 | 내부 접속 주소 | 외부 노출 |
 |------------|-----------|------------------------|--------------|----------------|-----------|
-| **hello-ai** | `hello-ai.mohae.uk` | 8080/TCP | 8080 | `hello-ai:8080` | ✅ 예 |
 | **nabijiyo** | `nabijiyo.mohae.uk` | 80/TCP | 3000 | `nabijiyo:80` | ✅ 예 |
 | **postgres** | N/A | 5432/TCP | 5432 | `postgres:5432` | ❌ 아니오 |
 
 ### 서비스별 상세 정보
-
-#### hello-ai
-- **용도:** AI 기반 맛집 분석 서비스
-- **외부 접속:** https://hello-ai.mohae.uk
-- **내부 접속:** http://hello-ai:8080
-- **기술 스택:** Next.js (TypeScript), Prisma
-- **특이사항:** AI API 통합, 스크래핑 서버와 연동
 
 #### nabijiyo
 - **용도:** 메인 웹 애플리케이션 (프론트엔드)
@@ -302,17 +294,6 @@
 - **내부 접속:** http://nabijiyo:80
 - **기술 스택:** Next.js (App Router), Tailwind CSS
 - **특이사항:** 사용자 인터페이스, 관리자 대시보드 포함
-
-### 서비스 제거 및 스크래핑 로직 개선
-
-#### hello-ai 서비스 제거
-1.  Kubernetes Deployment 및 Service 삭제: `kubectl delete deployment hello-ai -n ai-lounge` 및 `kubectl delete service hello-ai -n ai-lounge` 명령어를 실행하여 삭제했습니다.
-2.  ArgoCD 설정에서 `hello-ai` 제거: `app-of-apps/kustomization.yaml`에서 `hello-ai`를 제거하고 Git에 커밋 및 푸시했습니다.
-
-#### nabijiyo 스크래핑 로직 개선
--   `PostInfo` 인터페이스에 `reviews` 속성을 추가하여 타입 에러를 해결했습니다.
--   `/api/health` 엔드포인트의 경우 이미 구현되어 있습니다.
--   현재 진행 중인 작업: Docker 이미지 재빌드
 
 #### postgres
 - **용도:** 데이터베이스 서버
@@ -353,7 +334,6 @@
 #### 등록된 Subdomain 요청 메시지
 
 ```
-hello-ai, hello-ai.ai-lounge:8080
 nabijiyo, nabijiyo.ai-lounge:80
 ```
 
@@ -366,8 +346,6 @@ nabijiyo, nabijiyo.ai-lounge:80
 
 #### 서비스 간 통신 (내부)
 - `nabijiyo` → `postgres`:5432 (데이터베이스 연결)
-- `hello-ai` → `postgres`:5432 (데이터베이스 연결)
-- `nabijiyo` → `hello-ai`:8080 (AI 서비스 API 호출)
 
 ### 보안 고려사항
 
