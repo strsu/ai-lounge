@@ -3,6 +3,9 @@
 # ========================================
 FROM node:18-alpine AS builder
 
+# OpenSSL 설치
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 # 의존성 파일 복사 (레이어 캐싱 최적화)
@@ -24,7 +27,7 @@ COPY . .
 RUN npm run build
 
 # 불필요한 파일 삭제
-RUN rm -rf /app/node_modules/.prisma
+# RUN rm -rf /app/node_modules/.prisma
 
 # public 디렉토리가 존재하지 않으면 생성
 RUN mkdir -p public || true
@@ -33,6 +36,9 @@ RUN mkdir -p public || true
 # Stage 2: Runtime (실행 단계)
 # ========================================
 FROM node:18-alpine AS runtime
+
+# OpenSSL 설치 (Prisma CLI 필요)
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -43,6 +49,15 @@ ENV HOSTNAME="0.0.0.0"
 
 # .next/standalone 디렉토리 전체 복사
 COPY --from=builder /app/.next/standalone ./
+
+# Prisma 스키마 및 Client 복사
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+
+# Prisma CLI 전역 설치
+RUN npm install -g prisma@5.22.0
 
 # 포트 노출
 EXPOSE 3000
