@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/db'
 import { scrapeNaverBlogSearch, extractCafeInfo, extractReviews } from '@/lib/scraper'
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
-
-const prisma = new PrismaClient()
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
           title: post.title,
           content: post.content,
           thumbnail: post.thumbnail,
-          metadata: post.metadata,
+          metadata: post.metadata || {},
         }
       })
 

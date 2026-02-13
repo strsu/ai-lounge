@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nabijiyo-migrate
+  namespace: ai-lounge
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: migrate
+        image: registry.prup.xyz/ai-lounge/nabijiyo:latest
+        command: ["npx", "prisma", "db", "push", "--skip-generate", "--accept-data-loss"]
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: nabijiyo-db
+              key: url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      restartPolicy: Never
