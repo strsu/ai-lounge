@@ -13,10 +13,10 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       try {
         const response = await fetch(`/api/detail/${params.id}`, {
           method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
 
         const data = await response.json()
 
