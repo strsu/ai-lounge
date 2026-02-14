@@ -17,6 +17,22 @@ const nextConfig = {
         'utf-8-validate': 'commonjs utf-8-validate',
         'bufferutil': 'commonjs bufferutil',
       })
+
+      // Make Prisma Client external to avoid build-time issues
+      const originalExternals = config.externals
+      config.externals = [
+        ...config.externals,
+        function ({ request }, callback) {
+          if (request === '@prisma/client') {
+            return callback(null, 'commonjs ' + request)
+          }
+          if (typeof originalExternals === 'function') {
+            originalExternals({ request }, callback)
+          } else {
+            callback()
+          }
+        },
+      ]
     }
 
     return config

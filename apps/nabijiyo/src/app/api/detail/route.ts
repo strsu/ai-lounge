@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
 import { analyzePosts, AnalysisResult } from '@/lib/analyzer'
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+
+// Dynamic import Prisma to avoid build-time issues
+const getPrisma = async () => {
+  const { prisma } = await import('@/lib/db')
+  return prisma
+}
 
 /**
  * 맛집 상세 정보 API
@@ -12,6 +17,8 @@ export const runtime = 'nodejs'
  */
 export async function GET(request: NextRequest) {
   try {
+    const prisma = await getPrisma()
+
     const { searchParams } = new URL(request.url)
     const cafeId = searchParams.get('id')
 
