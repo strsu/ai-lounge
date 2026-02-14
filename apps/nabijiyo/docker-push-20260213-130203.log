@@ -1,0 +1,33 @@
+The push refers to repository [registry.prup.xyz/ai-lounge/nabijiyo]
+46cd9920df1b: Preparing
+2fa8da900f97: Preparing
+409649dcee05: Preparing
+63d6def5eda4: Preparing
+a0bc4a6c1aec: Preparing
+a37faf338b22: Preparing
+2ca7894d298a: Preparing
+ae70a89dd7ca: Preparing
+82140d9a70a7: Preparing
+f3b40b0cdb1c: Preparing
+0b1f26057bd0: Preparing
+08000c18d16d: Preparing
+a37faf338b22: Waiting
+2ca7894d298a: Waiting
+ae70a89dd7ca: Waiting
+82140d9a70a7: Waiting
+f3b40b0cdb1c: Waiting
+0b1f26057bd0: Waiting
+08000c18d16d: Waiting
+a0bc4a6c1aec: Pushed
+409649dcee05: Pushed
+2fa8da900f97: Pushed
+2ca7894d298a: Pushed
+82140d9a70a7: Layer already exists
+63d6def5eda4: Pushed
+f3b40b0cdb1c: Layer already exists
+0b1f26057bd0: Layer already exists
+08000c18d16d: Layer already exists
+ae70a89dd7ca: Pushed
+a37faf338b22: Pushed
+46cd9920df1b: Pushed
+latest: digest: sha256:1ef0f0f07909a58b5591c82a84be1658386746168107a4b13bf9a5586b47d165 size: 2842

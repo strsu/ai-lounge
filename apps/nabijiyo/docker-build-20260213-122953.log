@@ -1,0 +1,112 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  493.1kB
+Step 1/22 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/22 : WORKDIR /app
+ ---> Using cache
+ ---> 2a7a8061ed51
+Step 3/22 : COPY package*.json ./
+ ---> Using cache
+ ---> a210b443546e
+Step 4/22 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 9628caade070
+Step 5/22 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 59eb713b39f0
+Step 6/22 : RUN npx prisma generate
+ ---> Using cache
+ ---> 6189c459a0be
+Step 7/22 : COPY . .
+ ---> bff207224561
+Step 8/22 : RUN npm run build
+ ---> Running in 8ede3905bce7
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+[91mprisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+Please manually install OpenSSL and try installing Prisma again.
+[0m[91mPrismaClientInitializationError: Unable to require(`/app/node_modules/.prisma/client/libquery_engine-linux-musl.so.node`).
+The Prisma engines do not seem to be compatible with your system. Please refer to the documentation about Prisma's system requirements: https://pris.ly/d/system-requirements
+
+Details: Error loading shared library libssl.so.1.1: No such file or directory (needed by /app/node_modules/.prisma/client/libquery_engine-linux-musl.so.node)
+    at Object.loadLibrary (/app/node_modules/@prisma/client/runtime/library.js:111:10243)
+    at async _r.loadEngine (/app/node_modules/@prisma/client/runtime/library.js:112:448)
+    at async _r.instantiateLibrary (/app/node_modules/@prisma/client/runtime/library.js:111:12599) {
+  clientVersion: '5.22.0',
+  errorCode: undefined
+}
+[0m   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.33 kB        88.6 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/detail                          0 B                0 B
+├ ƒ /api/detail_backup                   0 B                0 B
+├ ƒ /api/detail/[id]                     0 B                0 B
+├ ○ /api/health                          0 B                0 B
+├ ƒ /api/scrape                          0 B                0 B
+├ ƒ /api/search                          0 B                0 B
+├ ƒ /cafe/[id]                           10.8 kB          98 kB
+└ ○ /search                              1.74 kB          89 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-6d3152f80147ba9e.js       31.7 kB
+  ├ chunks/fd9d1056-9f91b5e418130764.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container 8ede3905bce7
+ ---> 7ba3af8caea7
+Step 9/22 : RUN rm -rf /app/node_modules/.prisma
+ ---> Running in 87d04fec2b73
+ ---> Removed intermediate container 87d04fec2b73
+ ---> 03d36d33079f
+Step 10/22 : RUN mkdir -p public || true
+ ---> Running in 08d408a6e11d
+ ---> Removed intermediate container 08d408a6e11d
+ ---> 63bf3ce7ad30
+Step 11/22 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 12/22 : WORKDIR /app
+ ---> Using cache
+ ---> 2a7a8061ed51
+Step 13/22 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> ffa0a8b3be0f
+Step 14/22 : ENV PORT=3000
+ ---> Using cache
+ ---> b494d2f87f8e
+Step 15/22 : ENV HOSTNAME="0.0.0.0"
+ ---> Using cache
+ ---> 5fd6e466536b
+Step 16/22 : COPY --from=builder /app/.next/standalone ./
+ ---> e25e83f3efb3
+Step 17/22 : COPY --from=builder /app/prisma ./prisma
+ ---> 2c8c7e9bcf88
+Step 18/22 : COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY failed: stat app/node_modules/.prisma: file does not exist

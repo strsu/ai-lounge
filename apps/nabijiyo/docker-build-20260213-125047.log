@@ -1,0 +1,128 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  524.3kB
+Step 1/24 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/24 : RUN apk add --no-cache openssl
+ ---> Using cache
+ ---> cb1b1c863b5e
+Step 3/24 : WORKDIR /app
+ ---> Using cache
+ ---> 609c8cbe627f
+Step 4/24 : COPY package*.json ./
+ ---> Using cache
+ ---> 4120a3c3b822
+Step 5/24 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 3f879c4fc8f3
+Step 6/24 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 7a83845b1066
+Step 7/24 : RUN npx prisma generate
+ ---> Using cache
+ ---> 667bb59d6c76
+Step 8/24 : COPY . .
+ ---> 2b69bf278350
+Step 9/24 : RUN npm run build
+ ---> Running in 14c437344c07
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.33 kB        88.6 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/detail                          0 B                0 B
+├ ƒ /api/detail_backup                   0 B                0 B
+├ ƒ /api/detail/[id]                     0 B                0 B
+├ ○ /api/health                          0 B                0 B
+├ ƒ /api/scrape                          0 B                0 B
+├ ƒ /api/search                          0 B                0 B
+├ ƒ /cafe/[id]                           10.8 kB          98 kB
+└ ○ /search                              1.74 kB          89 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-6d3152f80147ba9e.js       31.7 kB
+  ├ chunks/fd9d1056-9f91b5e418130764.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container 14c437344c07
+ ---> 8bfc826cd14d
+Step 10/24 : RUN mkdir -p public || true
+ ---> Running in c73b0c7fd661
+ ---> Removed intermediate container c73b0c7fd661
+ ---> 4b95846b10b9
+Step 11/24 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 12/24 : WORKDIR /app
+ ---> Using cache
+ ---> 2a7a8061ed51
+Step 13/24 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> ffa0a8b3be0f
+Step 14/24 : ENV PORT=3000
+ ---> Using cache
+ ---> b494d2f87f8e
+Step 15/24 : ENV HOSTNAME="0.0.0.0"
+ ---> Using cache
+ ---> 5fd6e466536b
+Step 16/24 : COPY --from=builder /app/.next/standalone ./
+ ---> 64e7586797ad
+Step 17/24 : COPY --from=builder /app/prisma ./prisma
+ ---> 00c385c7f68a
+Step 18/24 : COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+ ---> ba402242267a
+Step 19/24 : COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+ ---> 158b8951d5e3
+Step 20/24 : COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+ ---> 4a525264ed35
+Step 21/24 : RUN npm install -g prisma@5.22.0
+ ---> Running in 763654c9e768
+
+added 6 packages in 42s
+[91mnpm notice
+npm notice New major version of npm available! 10.8.2 -> 11.10.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+npm notice To update run: npm install -g npm@11.10.0
+npm notice
+[0m ---> Removed intermediate container 763654c9e768
+ ---> 49aeb446f8ab
+Step 22/24 : EXPOSE 3000
+ ---> Running in b0feba6d103a
+ ---> Removed intermediate container b0feba6d103a
+ ---> b4c93f1a65b0
+Step 23/24 : HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3     CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
+ ---> Running in 4cbd7f5d48ef
+ ---> Removed intermediate container 4cbd7f5d48ef
+ ---> 7c932f6a2fb7
+Step 24/24 : CMD ["node", "server.js"]
+ ---> Running in 630c3edd43b6
+ ---> Removed intermediate container 630c3edd43b6
+ ---> 8961245a68ce
+Successfully built 8961245a68ce
+Successfully tagged registry.prup.xyz/ai-lounge/nabijiyo:latest

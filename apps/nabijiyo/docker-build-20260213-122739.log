@@ -1,0 +1,61 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  491.5kB
+Step 1/22 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/22 : WORKDIR /app
+ ---> Using cache
+ ---> 2a7a8061ed51
+Step 3/22 : COPY package*.json ./
+ ---> Using cache
+ ---> a210b443546e
+Step 4/22 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 9628caade070
+Step 5/22 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 59eb713b39f0
+Step 6/22 : RUN npx prisma generate
+ ---> Using cache
+ ---> 6189c459a0be
+Step 7/22 : COPY . .
+ ---> 53eda8a00d2e
+Step 8/22 : RUN npm run build
+ ---> Running in 7b3f91522a32
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+[91mReferenceError: File is not defined
+    at 5399 (/app/.next/server/app/api/search/route.js:126:76584)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 4424 (/app/.next/server/app/api/search/route.js:126:57858)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 5517 (/app/.next/server/app/api/search/route.js:126:15120)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 4016 (/app/.next/server/app/api/search/route.js:126:51219)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 2503 (/app/.next/server/app/api/search/route.js:126:21642)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+[0m[91m
+> Build error occurred
+[0m[91mError: Failed to collect page data for /api/search
+    at /app/node_modules/next/dist/build/utils.js:1269:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  type: 'Error'
+}
+[0mThe command '/bin/sh -c npm run build' returned a non-zero code: 1

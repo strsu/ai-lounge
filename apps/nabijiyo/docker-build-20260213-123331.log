@@ -1,0 +1,152 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  503.8kB
+Step 1/23 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/23 : RUN apk add --no-cache openssl
+ ---> Running in 11e8e7e03193
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+(1/3) Upgrading libcrypto3 (3.3.3-r0 -> 3.3.6-r0)
+(2/3) Upgrading libssl3 (3.3.3-r0 -> 3.3.6-r0)
+(3/3) Installing openssl (3.3.6-r0)
+Executing busybox-1.37.0-r12.trigger
+OK: 11 MiB in 18 packages
+ ---> Removed intermediate container 11e8e7e03193
+ ---> cb1b1c863b5e
+Step 3/23 : WORKDIR /app
+ ---> Running in 122273d8616d
+ ---> Removed intermediate container 122273d8616d
+ ---> 609c8cbe627f
+Step 4/23 : COPY package*.json ./
+ ---> 4120a3c3b822
+Step 5/23 : RUN npm ci --legacy-peer-deps
+ ---> Running in fbfbd05c4738
+[91mnpm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'cheerio@1.2.0',
+npm warn EBADENGINE   required: { node: '>=20.18.1' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+[0m[91mnpm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'undici@7.21.0',
+npm warn EBADENGINE   required: { node: '>=20.18.1' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+[0m[91mnpm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+[0m[91mnpm warn deprecated glob@10.3.10: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+[0m
+added 417 packages, and audited 418 packages in 2m
+
+169 packages are looking for funding
+  run `npm fund` for details
+
+5 high severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+[91mnpm notice
+npm notice New major version of npm available! 10.8.2 -> 11.10.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+npm notice To update run: npm install -g npm@11.10.0
+npm notice
+[0m ---> Removed intermediate container fbfbd05c4738
+ ---> 3f879c4fc8f3
+Step 6/23 : COPY prisma ./prisma
+ ---> 7a83845b1066
+Step 7/23 : RUN npx prisma generate
+ ---> Running in 42ac4ccece37
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./node_modules/@prisma/client in 150ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+ ---> Removed intermediate container 42ac4ccece37
+ ---> 667bb59d6c76
+Step 8/23 : COPY . .
+ ---> af7adfe8c741
+Step 9/23 : RUN npm run build
+ ---> Running in c761a3870c6c
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.33 kB        88.6 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/detail                          0 B                0 B
+├ ƒ /api/detail_backup                   0 B                0 B
+├ ƒ /api/detail/[id]                     0 B                0 B
+├ ○ /api/health                          0 B                0 B
+├ ƒ /api/scrape                          0 B                0 B
+├ ƒ /api/search                          0 B                0 B
+├ ƒ /cafe/[id]                           10.8 kB          98 kB
+└ ○ /search                              1.74 kB          89 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-6d3152f80147ba9e.js       31.7 kB
+  ├ chunks/fd9d1056-9f91b5e418130764.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container c761a3870c6c
+ ---> e20e85f34de2
+Step 10/23 : RUN mkdir -p public || true
+ ---> Running in 26e11b5120f4
+ ---> Removed intermediate container 26e11b5120f4
+ ---> a02baa8df9de
+Step 11/23 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 12/23 : WORKDIR /app
+ ---> Using cache
+ ---> 2a7a8061ed51
+Step 13/23 : ENV NODE_ENV=production
+ ---> Using cache
+ ---> ffa0a8b3be0f
+Step 14/23 : ENV PORT=3000
+ ---> Using cache
+ ---> b494d2f87f8e
+Step 15/23 : ENV HOSTNAME="0.0.0.0"
+ ---> Using cache
+ ---> 5fd6e466536b
+Step 16/23 : COPY --from=builder /app/.next/standalone ./
+ ---> dc296273958a
+Step 17/23 : COPY --from=builder /app/prisma ./prisma
+ ---> 178e335ffee5
+Step 18/23 : COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+ ---> 88fddc2cd470
+Step 19/23 : COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+ ---> da27af17b33e
+Step 20/23 : RUN npx prisma generate
+ ---> Running in 44ada8bcd872

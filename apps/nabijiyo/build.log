@@ -1,0 +1,40 @@
+
+> nabijiyo@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.33 kB        88.6 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/detail                          0 B                0 B
+├ ƒ /api/detail_backup                   0 B                0 B
+├ ƒ /api/detail/[id]                     0 B                0 B
+├ ○ /api/health                          0 B                0 B
+├ ƒ /api/scrape                          0 B                0 B
+├ ƒ /api/search                          0 B                0 B
+├ ƒ /cafe/[id]                           10.8 kB          98 kB
+└ ○ /search                              1.74 kB          89 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-6d3152f80147ba9e.js       31.7 kB
+  ├ chunks/fd9d1056-9f91b5e418130764.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

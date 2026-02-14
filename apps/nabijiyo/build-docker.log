@@ -1,0 +1,59 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  550.9kB
+Step 1/25 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/25 : RUN apk add --no-cache openssl
+ ---> Running in 8a284d6205b7
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+(1/3) Upgrading libcrypto3 (3.3.3-r0 -> 3.3.6-r0)
+(2/3) Upgrading libssl3 (3.3.3-r0 -> 3.3.6-r0)
+(3/3) Installing openssl (3.3.6-r0)
+Executing busybox-1.37.0-r12.trigger
+OK: 11 MiB in 18 packages
+ ---> Removed intermediate container 8a284d6205b7
+ ---> 609d85815f02
+Step 3/25 : WORKDIR /app
+ ---> Running in 0c6a5e345258
+ ---> Removed intermediate container 0c6a5e345258
+ ---> 8ad7e8ac1210
+Step 4/25 : COPY package*.json ./
+ ---> d20444787e6f
+Step 5/25 : RUN npm ci --legacy-peer-deps
+ ---> Running in 01bbbf650420
+[91mnpm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'cheerio@1.2.0',
+npm warn EBADENGINE   required: { node: '>=20.18.1' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+[0m[91mnpm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'undici@7.21.0',
+npm warn EBADENGINE   required: { node: '>=20.18.1' },
+npm warn EBADENGINE   current: { node: 'v18.20.8', npm: '10.8.2' }
+npm warn EBADENGINE }
+[0m[91mnpm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+[0m[91mnpm warn deprecated glob@10.3.10: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+[0m
+added 417 packages, and audited 418 packages in 1m
+
+169 packages are looking for funding
+  run `npm fund` for details
+
+5 high severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+[91mnpm notice
+npm notice New major version of npm available! 10.8.2 -> 11.10.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+npm notice To update run: npm install -g npm@11.10.0
+npm notice
+[0m

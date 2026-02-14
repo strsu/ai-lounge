@@ -16,6 +16,10 @@ yarn-debug.log
 yarn-error.log
 docker-build.log
 
+# Build logs
+build*.log
+docker-build*.log
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -24,7 +28,6 @@ Thumbs.db
 .vscode
 .idea
 *.swp
-*.swo
 
 # Git
 .git

@@ -1,0 +1,134 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  531.5kB
+Step 1/25 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/25 : RUN apk add --no-cache openssl
+ ---> Using cache
+ ---> cb1b1c863b5e
+Step 3/25 : WORKDIR /app
+ ---> Using cache
+ ---> 609c8cbe627f
+Step 4/25 : COPY package*.json ./
+ ---> Using cache
+ ---> 4120a3c3b822
+Step 5/25 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 3f879c4fc8f3
+Step 6/25 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 7a83845b1066
+Step 7/25 : RUN npx prisma generate
+ ---> Using cache
+ ---> 667bb59d6c76
+Step 8/25 : COPY . .
+ ---> 7d69ba0e9348
+Step 9/25 : RUN npm run build
+ ---> Running in 11413744188e
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    1.33 kB        88.6 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ƒ /api/detail                          0 B                0 B
+├ ƒ /api/detail_backup                   0 B                0 B
+├ ƒ /api/detail/[id]                     0 B                0 B
+├ ○ /api/health                          0 B                0 B
+├ ƒ /api/scrape                          0 B                0 B
+├ ƒ /api/search                          0 B                0 B
+├ ƒ /cafe/[id]                           10.8 kB          98 kB
+└ ○ /search                              1.74 kB          89 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-6d3152f80147ba9e.js       31.7 kB
+  ├ chunks/fd9d1056-9f91b5e418130764.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ---> Removed intermediate container 11413744188e
+ ---> 1a8e818db2f7
+Step 10/25 : RUN mkdir -p public || true
+ ---> Running in 96f8fe14b6b3
+ ---> Removed intermediate container 96f8fe14b6b3
+ ---> ba9eb1242649
+Step 11/25 : FROM node:18-alpine AS runtime
+ ---> ee77c6cd7c18
+Step 12/25 : RUN apk add --no-cache openssl
+ ---> Using cache
+ ---> cb1b1c863b5e
+Step 13/25 : WORKDIR /app
+ ---> Using cache
+ ---> 609c8cbe627f
+Step 14/25 : ENV NODE_ENV=production
+ ---> Running in e020285928d5
+ ---> Removed intermediate container e020285928d5
+ ---> ff1bd16ee21a
+Step 15/25 : ENV PORT=3000
+ ---> Running in a1dd172b2fb3
+ ---> Removed intermediate container a1dd172b2fb3
+ ---> e014d1a388cd
+Step 16/25 : ENV HOSTNAME="0.0.0.0"
+ ---> Running in 1372b6e036f9
+ ---> Removed intermediate container 1372b6e036f9
+ ---> 35d84049e413
+Step 17/25 : COPY --from=builder /app/.next/standalone ./
+ ---> 38292d919107
+Step 18/25 : COPY --from=builder /app/prisma ./prisma
+ ---> a131c7b25283
+Step 19/25 : COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+ ---> 1d44fa6c0273
+Step 20/25 : COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+ ---> fcb679873ecb
+Step 21/25 : COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+ ---> 74e790f0029b
+Step 22/25 : RUN npm install -g prisma@5.22.0
+ ---> Running in 84dd57f5e96d
+
+added 6 packages in 27s
+[91mnpm notice
+npm notice New major version of npm available! 10.8.2 -> 11.10.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+npm notice To update run: npm install -g npm@11.10.0
+npm notice
+[0m ---> Removed intermediate container 84dd57f5e96d
+ ---> f9a23dc8c7ff
+Step 23/25 : EXPOSE 3000
+ ---> Running in d7e7318a6d5c
+ ---> Removed intermediate container d7e7318a6d5c
+ ---> 2a77d8d915ef
+Step 24/25 : HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3     CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
+ ---> Running in 607f0251ae24
+ ---> Removed intermediate container 607f0251ae24
+ ---> 26847c7ea87e
+Step 25/25 : CMD ["node", "server.js"]
+ ---> Running in 30f1acf73c73
+ ---> Removed intermediate container 30f1acf73c73
+ ---> 326856f7e8ff
+Successfully built 326856f7e8ff
+Successfully tagged registry.prup.xyz/ai-lounge/nabijiyo:latest

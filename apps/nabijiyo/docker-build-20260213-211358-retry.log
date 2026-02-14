@@ -1,0 +1,64 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  544.8kB
+Step 1/25 : FROM node:18-alpine AS builder
+ ---> ee77c6cd7c18
+Step 2/25 : RUN apk add --no-cache openssl
+ ---> Using cache
+ ---> dd7bc12640ea
+Step 3/25 : WORKDIR /app
+ ---> Using cache
+ ---> 6233bee267c0
+Step 4/25 : COPY package*.json ./
+ ---> Using cache
+ ---> c17c445b3502
+Step 5/25 : RUN npm ci --legacy-peer-deps
+ ---> Using cache
+ ---> 7fb0498a4bdf
+Step 6/25 : COPY prisma ./prisma
+ ---> Using cache
+ ---> 106b3cb873c6
+Step 7/25 : RUN npx prisma generate
+ ---> Using cache
+ ---> d23c681f3996
+Step 8/25 : COPY . .
+ ---> d9bf406e9f11
+Step 9/25 : RUN npm run build
+ ---> Running in 95c8073912ae
+
+> nabijiyo@1.0.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+[91mReferenceError: File is not defined
+    at 5399 (/app/.next/server/app/api/scrape/route.js:126:76584)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 4424 (/app/.next/server/app/api/scrape/route.js:126:57858)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 5517 (/app/.next/server/app/api/scrape/route.js:126:15120)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 4016 (/app/.next/server/app/api/scrape/route.js:126:51219)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+    at 2503 (/app/.next/server/app/api/scrape/route.js:126:21642)
+    at t (/app/.next/server/webpack-runtime.js:1:142)
+[0m[91m
+[0m[91m> Build error occurred
+[0m[91mError: Failed to collect page data for /api/scrape
+    at /app/node_modules/next/dist/build/utils.js:1269:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  type: 'Error'
+}
+[0mThe command '/bin/sh -c npm run build' returned a non-zero code: 1

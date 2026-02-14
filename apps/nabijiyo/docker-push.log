@@ -1,0 +1,80 @@
+The push refers to repository [registry.prup.xyz/ai-lounge/nabijiyo]
+a5831f259b18: Preparing
+fe8fa2fa4b8b: Preparing
+afcb4edc32ed: Preparing
+b1d763ba58b4: Preparing
+f955093b210c: Preparing
+82140d9a70a7: Preparing
+f3b40b0cdb1c: Preparing
+0b1f26057bd0: Preparing
+08000c18d16d: Preparing
+82140d9a70a7: Waiting
+f3b40b0cdb1c: Waiting
+0b1f26057bd0: Waiting
+08000c18d16d: Waiting
+f955093b210c: Layer already exists
+82140d9a70a7: Layer already exists
+f3b40b0cdb1c: Layer already exists
+0b1f26057bd0: Layer already exists
+a5831f259b18: Pushed
+fe8fa2fa4b8b: Pushed
+08000c18d16d: Layer already exists
+afcb4edc32ed: Pushed
+b1d763ba58b4: Retrying in 5 seconds
+b1d763ba58b4: Retrying in 4 seconds
+b1d763ba58b4: Retrying in 3 seconds
+b1d763ba58b4: Retrying in 2 seconds
+b1d763ba58b4: Retrying in 1 second
+b1d763ba58b4: Retrying in 10 seconds
+b1d763ba58b4: Retrying in 9 seconds
+b1d763ba58b4: Retrying in 8 seconds
+b1d763ba58b4: Retrying in 7 seconds
+b1d763ba58b4: Retrying in 6 seconds
+b1d763ba58b4: Retrying in 5 seconds
+b1d763ba58b4: Retrying in 4 seconds
+b1d763ba58b4: Retrying in 3 seconds
+b1d763ba58b4: Retrying in 2 seconds
+b1d763ba58b4: Retrying in 1 second
+b1d763ba58b4: Retrying in 15 seconds
+b1d763ba58b4: Retrying in 14 seconds
+b1d763ba58b4: Retrying in 13 seconds
+b1d763ba58b4: Retrying in 12 seconds
+b1d763ba58b4: Retrying in 11 seconds
+b1d763ba58b4: Retrying in 10 seconds
+b1d763ba58b4: Retrying in 9 seconds
+b1d763ba58b4: Retrying in 8 seconds
+b1d763ba58b4: Retrying in 7 seconds
+b1d763ba58b4: Retrying in 6 seconds
+b1d763ba58b4: Retrying in 5 seconds
+b1d763ba58b4: Retrying in 4 seconds
+b1d763ba58b4: Retrying in 3 seconds
+b1d763ba58b4: Retrying in 2 seconds
+b1d763ba58b4: Retrying in 1 second
+b1d763ba58b4: Retrying in 20 seconds
+b1d763ba58b4: Retrying in 19 seconds
+b1d763ba58b4: Retrying in 18 seconds
+b1d763ba58b4: Retrying in 17 seconds
+b1d763ba58b4: Retrying in 16 seconds
+b1d763ba58b4: Retrying in 15 seconds
+b1d763ba58b4: Retrying in 14 seconds
+b1d763ba58b4: Retrying in 13 seconds
+b1d763ba58b4: Retrying in 12 seconds
+b1d763ba58b4: Retrying in 11 seconds
+b1d763ba58b4: Retrying in 10 seconds
+b1d763ba58b4: Retrying in 9 seconds
+b1d763ba58b4: Retrying in 8 seconds
+b1d763ba58b4: Retrying in 7 seconds
+b1d763ba58b4: Retrying in 6 seconds
+b1d763ba58b4: Retrying in 5 seconds
+b1d763ba58b4: Retrying in 4 seconds
+b1d763ba58b4: Retrying in 3 seconds
+b1d763ba58b4: Retrying in 2 seconds
+b1d763ba58b4: Retrying in 1 second
+unknown: <html>
+<head><title>413 Payload Too Large</title></head>
+<body>
+<center><h1>413 Payload Too Large</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
+
