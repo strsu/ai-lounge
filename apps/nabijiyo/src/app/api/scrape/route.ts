@@ -4,6 +4,8 @@ import { scrapeNaverBlogSearch, extractCafeInfo, extractReviews } from '@/lib/sc
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+export const fetchCache = 'force-no-store'
+export const revalidate = 0
 
 // Dynamic import Prisma to avoid build-time issues
 const getPrisma = async () => {
@@ -15,7 +17,7 @@ export async function POST(request: NextRequest) {
   try {
     const prisma = await getPrisma()
 
-    const body = await request.json()
+    const body = await request.json() as { query?: string }
     const { query } = body
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
