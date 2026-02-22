@@ -80,14 +80,14 @@ export async function scrapeNaverBlogSearch(query: string, resultCount: number =
 }
 
 /**
- * 네이버 지식인 스크래핑
+ * 네이버 카페 스크래핑
  * @param query 검색어
  * @param resultCount 검색 결과 수 (기본값: 10)
  * @returns 포스팅 정보 배열
  */
-export async function scrapeNaverKnowledgeSearch(query: string, resultCount: number = 10): Promise<PostInfo[]> {
+export async function scrapeNaverCafeSearch(query: string, resultCount: number = 10): Promise<PostInfo[]> {
   try {
-    const searchUrl = `https://search.naver.com/search.naver?where=kin&query=${encodeURIComponent(query)}&sm=tab_opt&nso=so%3Ar%2Br%2Frx%2C0%3Ar%2Frp%2Ba%2Bsr%2Cp%3Aall&start=1&display=15`
+    const searchUrl = `https://search.naver.com/search.naver?where=cafe&query=${encodeURIComponent(query)}&sm=tab_opt&nso=so%3Ar%2Br%2Frx%2C0%3Ar%2Frp%2Ba%2Bsr%2Cp%3Aall&start=1&display=15`
 
     const response = await axios.get(searchUrl, {
       headers: {
@@ -100,23 +100,27 @@ export async function scrapeNaverKnowledgeSearch(query: string, resultCount: num
 
     const posts: PostInfo[] = []
 
-    // 지식인 답변 정보 추출
-    $('.answer_area').each((index, element) => {
+    // 카페 포스팅 정보 추출
+    $('.cafe_area').each((index, element) => {
       if (index >= resultCount) return false
 
       const $el = $(element)
 
-      const title = $el.find('.question_area a').text().trim()
-      const url = $el.find('.question_area a').attr('href')
-      const content = $el.find('.answer_text').text().trim()
+      const title = $el.find('.title_area a').text().trim()
+      const url = $el.find('.title_area a').attr('href')
+      const thumbnail = $el.find('.thumb img').attr('src')
+      const content = $el.find('.dsc_area a').text().trim()
+      const cafeName = $el.find('.name_area .name').text().trim()
 
       if (url && title) {
         posts.push({
           url,
           title,
+          thumbnail,
           content,
           metadata: {
-            summary: '네이버 지식인 답변',
+            cafeName,
+            summary: '네이버 카페 포스팅',
           },
         })
       }
@@ -124,8 +128,8 @@ export async function scrapeNaverKnowledgeSearch(query: string, resultCount: num
 
     return posts
   } catch (error) {
-    console.error('Naver knowledge scraping error:', error)
-    throw new Error('네이버 지식인 스크래핑 실패')
+    console.error('Naver cafe scraping error:', error)
+    throw new Error('네이버 카페 스크래핑 실패')
   }
 }
 

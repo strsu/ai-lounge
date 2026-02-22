@@ -281,7 +281,7 @@ model Post {
   id         String     @id @default(uuid())
   cafeId     String
   cafe       Cafe       @relation(fields: [cafeId], references: [id])
-  source     String     // naver_blog, naver_knowledge, instagram
+  source     String     // naver_blog, naver_cafe, instagram
   url        String
   title      String
   content    String
@@ -456,8 +456,8 @@ curl http://localhost:3000/api/admin/cafes
 # 네이버 블로그 스크래핑
 node lib/scrape.ts --source naver_blog --url "https://blog.naver.com/..."
 
-# 네이버 지식인 스크래핑
-node lib/scrape.ts --source naver_knowledge --url "https://kin.naver.com/..."
+# 네이버 카페 스크래핑
+node lib/scrape.ts --source naver_cafe --url "https://cafe.naver.com/..."
 ```
 
 ### 4. 분석 테스트

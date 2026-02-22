@@ -254,7 +254,7 @@ export default function CafeDetailPage({ params }: { params: { id: string } }) {
                       </h3>
                       <p className="text-sm text-gray-500 mb-2">
                         {post.source === 'naver_blog' && '네이버 블로그'}
-                        {post.source === 'naver_knowledge' && '네이버 지식인'}
+                        {post.source === 'naver_cafe' && '네이버 카페'}
                       </p>
                       {post.content && (
                         <p className="text-gray-600 text-sm line-clamp-2">
