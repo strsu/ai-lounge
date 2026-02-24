@@ -26,12 +26,12 @@ model Post {
   id         String     @id @default(uuid())
   cafeId     String
   cafe       Cafe       @relation(fields: [cafeId], references: [id], onDelete: Cascade)
-  source     String     // naver_blog, naver_knowledge, instagram
+  source     String     // naver_blog, naver_cafe, instagram
   url        String
   title      String?
   content    String?
   thumbnail  String?
-  metadata   Json?
+  metadata   Json?     // 스크래핑 메타데이터 (작성자, 날짜, 조회수 등)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   reviews    Review[]
@@ -54,10 +54,10 @@ model Summary {
   id           String   @id @default(uuid())
   cafeId       String   @unique
   cafe         Cafe     @relation(fields: [cafeId], references: [id], onDelete: Cascade)
-  doPoints     Json     // 공통점
-  dontPoints   Json     // 차이점
-  warnings     Json     // 주의사항
-  overallScore Float?
+  doPoints     Json?    // 공통점: [{point: "맛이 좋음", consensus: 100}, ...]
+  dontPoints   Json?    // 차이점: [{point: "가격대가 다름", opinions: ["비쌈", "저렴함"]}, ...]
+  warnings     Json?    // 주의사항: ["주차 어려움", "주말 혼잡", ...]
+  overallScore Float?   // 종합 평점 (0-5)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
