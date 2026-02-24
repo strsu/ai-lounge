@@ -7,8 +7,6 @@ const nextConfig = {
     domains: ['blogfiles.pstatic.net', 'k.kakaocdn.net'],
   },
   output: 'standalone',
-  // Mark packages as external to avoid bundling issues
-  serverExternalPackages: ['@prisma/client'],
   webpack: (config, { isServer }) => {
     // Ignore browser-only modules on the server
     if (isServer) {
@@ -17,22 +15,6 @@ const nextConfig = {
         'utf-8-validate': 'commonjs utf-8-validate',
         'bufferutil': 'commonjs bufferutil',
       })
-
-      // Make Prisma Client external to avoid build-time issues
-      const originalExternals = config.externals
-      config.externals = [
-        ...config.externals,
-        function ({ request }, callback) {
-          if (request === '@prisma/client') {
-            return callback(null, 'commonjs ' + request)
-          }
-          if (typeof originalExternals === 'function') {
-            originalExternals({ request }, callback)
-          } else {
-            callback()
-          }
-        },
-      ]
     }
 
     return config
