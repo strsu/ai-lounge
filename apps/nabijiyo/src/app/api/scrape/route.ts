@@ -1,18 +1,6 @@
-// Fix for "File is not defined" error in Node.js environment
-// @ts-ignore
-global.File = class File {
-  constructor(bits: any[], name: string, options?: any) {
-    this.bits = bits
-    this.name = name
-    this.lastModified = options?.lastModified || Date.now()
-  }
-  bits: any[]
-  name: string
-  lastModified: number
-}
-
 import { NextRequest, NextResponse } from 'next/server'
 import { scrapeNaverBlogSearch, extractCafeInfo, extractReviews } from '@/lib/scraper'
+import { getPrismaClient } from '@/lib/db'
 
 // Disable static generation for this API route
 export const dynamic = 'force-dynamic'
@@ -20,15 +8,9 @@ export const runtime = 'nodejs'
 export const fetchCache = 'force-no-store'
 export const revalidate = 0
 
-// Dynamic import Prisma to avoid build-time issues
-const getPrisma = async () => {
-  const { prisma } = await import('@/lib/db')
-  return prisma
-}
-
 export async function POST(request: NextRequest) {
   try {
-    const prisma = await getPrisma()
+    const prisma = getPrismaClient()
 
     const body = await request.json() as { query?: string }
     const { query } = body
