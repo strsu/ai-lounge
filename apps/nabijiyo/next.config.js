@@ -7,6 +7,8 @@ const nextConfig = {
     domains: ['blogfiles.pstatic.net', 'k.kakaocdn.net'],
   },
   output: 'standalone',
+  // Mark packages as external to avoid bundling issues
+  serverExternalPackages: ['@prisma/client'],
   webpack: (config, { isServer }) => {
     // Ignore browser-only modules on the server
     if (isServer) {
