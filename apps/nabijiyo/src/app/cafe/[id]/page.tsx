@@ -53,7 +53,7 @@ export default function CafeDetailPage({ params }: { params: { id: string } }) {
   const fetchDetail = async () => {
     try {
       const response = await fetch(`/api/detail?id=${params.id}`)
-      const result = await response.json()
+      const result = await response.json() as { error?: string } & DetailResponse
 
       if (!response.ok) {
         throw new Error(result.error || '상세 정보를 불러오지 못했습니다')
