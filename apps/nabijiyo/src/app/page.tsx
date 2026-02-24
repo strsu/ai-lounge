@@ -34,7 +34,7 @@ export default function Home() {
               <input
                 type="text"
                 value={query}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.currentTarget.value)}
                 placeholder="맛집 이름을 입력하세요 (예: '도리쿠카라카라')"
                 className="w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
