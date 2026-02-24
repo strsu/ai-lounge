@@ -14,7 +14,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     async function fetchCafeDetails() {
       try {
         const response = await fetch(`/api/detail?id=${params.id}`)
-        const data = await response.json()
+        const data = await response.json() as { error?: string; cafe?: any; reviews?: any[]; doPoints?: string[]; dontPoints?: string[] }
 
         if (data.error) {
           setError(data.error)
