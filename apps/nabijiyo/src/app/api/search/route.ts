@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     const prisma = await getPrisma()
 
-    const body = await request.json()
+    const body = await request.json() as { query?: string; resultCount?: number }
     const { query, resultCount = 10 } = body
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
