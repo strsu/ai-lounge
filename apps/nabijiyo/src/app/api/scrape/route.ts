@@ -1,3 +1,16 @@
+// Fix for "File is not defined" error in Node.js environment
+// @ts-ignore
+global.File = class File {
+  constructor(bits: any[], name: string, options?: any) {
+    this.bits = bits
+    this.name = name
+    this.lastModified = options?.lastModified || Date.now()
+  }
+  bits: any[]
+  name: string
+  lastModified: number
+}
+
 import { NextRequest, NextResponse } from 'next/server'
 import { scrapeNaverBlogSearch, extractCafeInfo, extractReviews } from '@/lib/scraper'
 
