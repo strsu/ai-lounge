@@ -8,5 +8,5 @@ resources:
   - migrate-job.yaml
 images:
   - name: nabijiyo
-    newName: registry.prup.xyz/ai-lounge/nabijiyo
+    newName: registry.prup.xyz/nabijiyo
     newTag: latest
