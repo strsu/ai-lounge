@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { scrapeNaverBlogSearch, extractCafeInfo, extractReviews } from '@/lib/scraper'
+import { scrapeNaverBlogSearch, scrapeNaverCafeSearch, extractCafeInfo, extractReviews } from '@/lib/scraper'
 import { getPrismaClient } from '@/lib/db'
 
 // Disable static generation for this API route
@@ -12,8 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     const prisma = getPrismaClient()
 
-    const body = await request.json() as { query?: string }
-    const { query } = body
+    const { query, source = 'naver_blog' } = await request.json() as { query?: string; source?: string }
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return NextResponse.json(
@@ -22,8 +21,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 네이버 블로그 검색
-    const posts = await scrapeNaverBlogSearch(query, 10)
+    // 소스 유효성 검사
+    const validSources = ['naver_blog', 'naver_cafe']
+    if (!validSources.includes(source)) {
+      return NextResponse.json(
+        { error: `유효하지 않은 소스입니다. 지원되는 소스: ${validSources.join(', ')}` },
+        { status: 400 }
+      )
+    }
+
+    // 스크래핑 (소스에 따라 다른 함수 호출)
+    const posts = source === 'naver_cafe'
+      ? await scrapeNaverCafeSearch(query, 10)
+      : await scrapeNaverBlogSearch(query, 10)
 
     if (posts.length === 0) {
       return NextResponse.json(
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest) {
       const savedPost = await prisma.post.create({
         data: {
           cafeId: cafe.id,
-          source: 'naver_blog',
+          source: source,
           url: post.url,
           title: post.title,
           content: post.content,
