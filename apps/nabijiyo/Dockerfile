@@ -1,7 +1,7 @@
 # ========================================
 # Stage 1: Builder (빌드 단계)
 # ========================================
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # OpenSSL 설치
 RUN apk add --no-cache openssl
@@ -35,7 +35,7 @@ RUN mkdir -p public || true
 # ========================================
 # Stage 2: Runtime (실행 단계)
 # ========================================
-FROM node:18-alpine AS runtime
+FROM node:20-alpine AS runtime
 
 # OpenSSL 설치 (Prisma CLI 필요)
 RUN apk add --no-cache openssl
