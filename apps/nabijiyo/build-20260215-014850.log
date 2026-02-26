@@ -1,0 +1,24 @@
+
+> nabijiyo@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./src/app/api/scrape/route.ts:21:13
+Type error: Property 'query' does not exist on type 'unknown'.
+
+[0m [90m 19 |[39m[0m
+[0m [90m 20 |[39m     [36mconst[39m body [33m=[39m [36mawait[39m request[33m.[39mjson()[0m
+[0m[31m[1m>[22m[39m[90m 21 |[39m     [36mconst[39m { query } [33m=[39m body[0m
+[0m [90m    |[39m             [31m[1m^[22m[39m[0m
+[0m [90m 22 |[39m[0m
+[0m [90m 23 |[39m     [36mif[39m ([33m![39mquery [33m||[39m [36mtypeof[39m query [33m!==[39m [32m'string'[39m [33m||[39m query[33m.[39mtrim()[33m.[39mlength [33m===[39m [35m0[39m) {[0m
+[0m [90m 24 |[39m       [36mreturn[39m [33mNextResponse[39m[33m.[39mjson([0m
+Next.js build worker exited with code: 1 and signal: null
